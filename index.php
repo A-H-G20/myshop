@@ -15,7 +15,7 @@
     include 'config.php'; // Assuming you have a database connection file
     
     // Check if user is logged in
-    session_start();
+
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
     
     // Fetch products from database

@@ -1,8 +1,12 @@
+  <?php
+session_start();
+?>
+
   <header class="header">
         <div class="header-content">
             <div class="logo">
                 <div class="logo-icon">🛒</div>
-                <span>Carrefour</span>
+                <span>My shop</span>
             </div>
             
             <div class="search-bar">
@@ -12,11 +16,22 @@
             <div class="header-right">
                 
                 
-                <a href="#" class="login-btn">Login & Register</a>
+           <?php if (isset($_SESSION['user_id'])): ?>
+    <a href="logout.php" class="login-btn">Logout</a>
+<?php else: ?>
+    <a href="login.php" class="login-btn">Login & Register</a>
+<?php endif; ?>
+
                 
-                <div class="flag"></div>
+             
                 
-                <div class="cart-btn">🛒</div>
+               <?php if (isset($_SESSION['user_id'])): ?>
+    <div class="cart-btn" onclick="window.location.href='cart.php'">🛒</div>
+<?php else: ?>
+    <div class="cart-btn" onclick="window.location.href='login.php'">🛒</div>
+<?php endif; ?>
+
+
             </div>
         </div>
     </header>
