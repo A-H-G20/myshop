@@ -7,6 +7,7 @@ session_start();
     font-size: 22px;
     margin-left: 10px;
     display: inline-block;
+    
 }
 
 </style>
@@ -17,9 +18,13 @@ session_start();
                 <span>My shop</span>
             </div>
             
-            <div class="search-bar">
-                <input type="text" placeholder="Search for products">
-            </div>
+           <div class="search-bar">
+    <form action="searchresult.php" method="GET">
+        <input type="text" name="query" placeholder="Search for products" required>
+        
+    </form>
+</div>
+
             
             <div class="header-right">
                 
@@ -57,11 +62,13 @@ $categories = $category_stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <nav class="navigation">
     <div class="nav-content">
-        <a href="#" class="nav-item categories">📱 All Categories</a>
+        <a href="index.php" class="nav-item categories">Home</a>
         <?php foreach ($categories as $cat): ?>
             <a href="category.php?id=<?php echo $cat['category_id']; ?>" class="nav-item">
                 <?php echo htmlspecialchars($cat['name']); ?>
             </a>
         <?php endforeach; ?>
+         <a href="orders.php" class="nav-item ">My Order</a>
+        <a href="about.php" class="nav-item ">About Us</a>
     </div>
 </nav>

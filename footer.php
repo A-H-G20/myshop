@@ -7,6 +7,7 @@
                         <h3>Stay Updated with Our Latest Offers</h3>
                         <p>Subscribe to our newsletter and be the first to know about new products, special discounts, and exclusive deals!</p>
                     </div>
+                    
                     <div class="newsletter-form">
                         <form id="newsletterForm">
                             <div class="form-group">
@@ -32,7 +33,7 @@
                     <!-- Company Info -->
                     <div class="footer-column">
                         <div class="footer-logo">
-                            <h3>Carrefour Lebanon</h3>
+                            <h3>My shop</h3>
                             <p>Your trusted partner for quality products and exceptional shopping experiences in Lebanon.</p>
                         </div>
                         <div class="social-links">
@@ -123,3 +124,41 @@
             </div>
         </div>
     </footer>
+
+    <script>
+document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const form = this;
+    const emailInput = document.getElementById('newsletterEmail');
+    const email = emailInput.value.trim();
+    const btnText = form.querySelector('.btn-text');
+    const btnLoading = form.querySelector('.btn-loading');
+
+    if (!email) return;
+
+    // Show loading
+    btnText.style.display = 'none';
+    btnLoading.style.display = 'inline-block';
+
+    fetch('newsletter.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'email=' + encodeURIComponent(email)
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+
+        // Reset form state
+        btnText.style.display = 'inline-block';
+        btnLoading.style.display = 'none';
+        if (data.success) emailInput.value = '';
+    })
+    .catch(() => {
+        alert('Something went wrong. Please try again later.');
+        btnText.style.display = 'inline-block';
+        btnLoading.style.display = 'none';
+    });
+});
+</script>
