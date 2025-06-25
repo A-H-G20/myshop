@@ -32,7 +32,7 @@
     <!-- Free Delivery Banner -->
     <div class="free-delivery">
         <div class="free-delivery-badge">FREE 🚚 DELIVERY</div>
-        <div>Free delivery on orders over 4.5 million LBP on same day orders</div>
+        <div>Free delivery on orders over 4.5 million $ on same day orders</div>
     </div>
 
   <div class="new-arrivals">
@@ -76,7 +76,7 @@
                 </div>
                 
                 <div class="product-price" onclick="openProductDetails(<?php echo $product['product_id']; ?>)" style="cursor: pointer;">
-                    <?php echo number_format($product['price'], 0, '.', ','); ?> <span style="font-size: 12px;">LBP</span>
+                    <?php echo number_format($product['price'], 0, '.', ','); ?> <span style="font-size: 12px;">$</span>
                 </div>
                 
                 <div class="product-name" onclick="openProductDetails(<?php echo $product['product_id']; ?>)" style="cursor: pointer;">

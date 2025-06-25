@@ -116,7 +116,7 @@ try {
                 <h1><?php echo htmlspecialchars($product['name']); ?></h1>
                 
                 <div class="product-price">
-                    <?php echo number_format($product['price'], 0, '.', ','); ?> LBP
+                    <?php echo number_format($product['price'], 0, '.', ','); ?> $
                 </div>
                 
                 <?php if (!empty($product['description'])): ?>

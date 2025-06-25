@@ -186,7 +186,7 @@ try {
             <div class="stats-grid">
                 <div class="stat-item"><div class="stat-number"><?php echo number_format($order_stats['order_count']); ?></div><div class="stat-label">Total Orders</div></div>
                 <div class="stat-item"><div class="stat-number"><?php echo number_format($cart_stats['cart_items']); ?></div><div class="stat-label">Items in Cart</div></div>
-                <div class="stat-item"><div class="stat-number"><?php echo number_format($spending_stats['total_spent'] ?? 0); ?> LBP</div><div class="stat-label">Total Spent</div></div>
+                <div class="stat-item"><div class="stat-number"><?php echo number_format($spending_stats['total_spent'] ?? 0); ?> $</div><div class="stat-label">Total Spent</div></div>
                 <div class="stat-item"><div class="stat-number"><?php echo ceil((time() - strtotime($user['created_at'])) / (365*24*60*60)); ?></div><div class="stat-label">Years as Member</div></div>
             </div>
         </div>

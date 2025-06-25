@@ -43,7 +43,7 @@ foreach ($items as $item) {
 }
 
 // Simulate delivery fee
-$delivery_fee = 8000;
+$delivery_fee = 3;
 $total = $subtotal + $delivery_fee;
 ?>
 
@@ -61,7 +61,7 @@ $total = $subtotal + $delivery_fee;
             </div>
             <div class="order-status">
                 <div class="status-badge status-<?= htmlspecialchars($order['status']) ?>"><?= ucfirst($order['status']) ?></div>
-                <div class="order-total">Total: <?= number_format($total, 0, '.', ',') ?> LBP</div>
+                <div class="order-total">Total: <?= number_format($total, 0, '.', ',') ?> $</div>
             </div>
         </div>
 
@@ -90,10 +90,10 @@ $total = $subtotal + $delivery_fee;
 
                             <div class="item-details">
                                 <div class="item-name"><?= htmlspecialchars($item['name']) ?></div>
-                                <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> LBP each</div>
+                                <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> $ each</div>
                                 <div class="item-quantity">Quantity: <?= $item['quantity'] ?></div>
                             </div>
-                            <div class="item-total"><?= number_format($total_item_price, 0, '.', ',') ?> LBP</div>
+                            <div class="item-total"><?= number_format($total_item_price, 0, '.', ',') ?> $</div>
                         </div>
                     <?php endforeach; ?>
                 </div>
@@ -103,9 +103,9 @@ $total = $subtotal + $delivery_fee;
                 <div class="order-summary">
                     <h2 class="section-title">Order Summary</h2>
                     <div class="summary-content">
-                        <div class="summary-item"><span>Subtotal:</span><span><?= number_format($subtotal, 0, '.', ',') ?> LBP</span></div>
-                        <div class="summary-item"><span>Delivery Fee:</span><span><?= number_format($delivery_fee, 0, '.', ',') ?> LBP</span></div>
-                        <div class="summary-item"><span>Total:</span><span><?= number_format($total, 0, '.', ',') ?> LBP</span></div>
+                        <div class="summary-item"><span>Subtotal:</span><span><?= number_format($subtotal, 0, '.', ',') ?> $</span></div>
+                        <div class="summary-item"><span>Delivery Fee:</span><span><?= number_format($delivery_fee, 0, '.', ',') ?> $</span></div>
+                        <div class="summary-item"><span>Total:</span><span><?= number_format($total, 0, '.', ',') ?> $</span></div>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@ $total = $subtotal + $delivery_fee;
     function downloadInvoice() {
         alert("Downloading invoice...");
         const link = document.createElement('a');
-        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent('Invoice for Order #<?= $order['order_id'] ?>\n\nTotal: <?= number_format($total, 0, '.', ',') ?> LBP');
+        link.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent('Invoice for Order #<?= $order['order_id'] ?>\n\nTotal: <?= number_format($total, 0, '.', ',') ?> $');
         link.download = 'invoice-<?= $order['order_id'] ?>.txt';
         link.click();
     }

@@ -121,7 +121,7 @@ try {
                             <div class="order-info-item"><strong>Order ID:</strong> #<?= $order['order_id'] ?></div>
                             <div class="order-info-item"><strong>Date:</strong> <?= date('M j, Y', strtotime($order['created_at'])) ?></div>
                             <div class="order-info-item"><strong>Status:</strong> <?= ucfirst($order['status']) ?></div>
-                            <div class="order-info-item"><strong>Total:</strong> <?= number_format($order['total_amount'], 0, '.', ',') ?> LBP</div>
+                            <div class="order-info-item"><strong>Total:</strong> <?= number_format($order['total_amount'], 0, '.', ',') ?> $</div>
                         </div>
 
                         <div class="order-items">
@@ -141,7 +141,7 @@ try {
 
                                         <div class="item-details">
                                             <div class="item-name"><?= htmlspecialchars($item['name']) ?></div>
-                                            <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> LBP</div>
+                                            <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> $</div>
                                             <div class="item-quantity">Qty: <?= $item['quantity'] ?></div>
                                         </div>
                                     </div>

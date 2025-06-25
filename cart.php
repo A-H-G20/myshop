@@ -262,7 +262,7 @@ foreach ($items as $it) {
                 <thead>
                     <tr>
                         <th>Product</th>
-                        <th>Price (LBP)</th>
+                        <th>Price ($)</th>
                         <th>Quantity</th>
                         <th>Subtotal</th>
                         <th></th>
@@ -307,7 +307,7 @@ foreach ($items as $it) {
             </table>
 
             <div class="total-box">
-                Total: <span id="grandTotal"><?= number_format($grand_total, 0, '.', ','); ?></span> LBP
+                Total: <span id="grandTotal"><?= number_format($grand_total, 0, '.', ','); ?></span> $
             </div>
 
             <button class="checkout-btn" <?= $grand_total == 0 ? 'disabled' : ''; ?> onclick="location.href='checkout.php'">
