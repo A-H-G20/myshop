@@ -126,7 +126,7 @@ $conn->close();
         }
         
         .settings-header {
-            background: linear-gradient(135deg, #8bc34a, #4caf50);
+           background: linear-gradient(135deg, #1e5ba8, #2d6cb8);
             color: white;
             padding: 30px;
             border-radius: 15px;
@@ -169,8 +169,8 @@ $conn->close();
         
         .tab-button.active {
             background: #f8f9fa;
-            border-bottom-color: #8bc34a;
-            color: #8bc34a;
+            border-bottom-color: #1e5ba8;
+            color: #1e5ba8;
         }
         
         .tab-button:hover {
@@ -233,8 +233,8 @@ $conn->close();
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #8bc34a;
-            box-shadow: 0 0 0 3px rgba(139, 195, 74, 0.1);
+            border-color: #1e5ba8;
+            box-shadow: 0 0 0 3px rgba(30, 91, 168, 0.1);
         }
         
         .form-group textarea {
@@ -256,7 +256,7 @@ $conn->close();
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #8bc34a, #4caf50);
+            background: linear-gradient(135deg, #1e5ba8, #2d6cb8);
             color: white;
         }
         
@@ -303,7 +303,7 @@ $conn->close();
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #8bc34a, #4caf50);
+           background: linear-gradient(135deg, #1e5ba8, #2d6cb8);
             color: white;
             display: inline-flex;
             align-items: center;
@@ -311,7 +311,7 @@ $conn->close();
             font-size: 48px;
             font-weight: 600;
             margin-bottom: 15px;
-            box-shadow: 0 10px 25px rgba(139, 195, 74, 0.3);
+            box-shadow: 0 10px 25px rgba(30, 91, 168, 0.3);
         }
         
         .checkbox-group {
@@ -352,7 +352,7 @@ $conn->close();
             content: '';
             width: 4px;
             height: 24px;
-            background: linear-gradient(135deg, #8bc34a, #4caf50);
+          background: linear-gradient(135deg, #1e5ba8, #2d6cb8);
             border-radius: 2px;
         }
     </style>

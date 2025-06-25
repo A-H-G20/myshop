@@ -1,7 +1,7 @@
    <header class="navbar">
     <div class="navbar-container">
         <nav>
-            <a href="index.php" class="logo">Saadi<span>Shop</span></a>
+            <a href="index.php" class="logo">My<span>Shop</span></a>
             <div class="nav-links">
                 <a href="index.php">Home</a>
                 <a href="products.php">Products</a>
