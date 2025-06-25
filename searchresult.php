@@ -42,7 +42,7 @@ try {
 
                     <div class="product-info">
                         <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
-                        <div class="product-price"><?php echo number_format($product['price'], 0, '.', ','); ?> S</div>
+                        <div class="product-price"><?php echo number_format($product['price'], 0, '.', ','); ?> $</div>
                         <div class="product-description"><?php echo htmlspecialchars($product['description']); ?></div>
                         <a href="details.php?id=<?php echo $product['product_id']; ?>" class="btn-view">View Details</a>
                     </div>
