@@ -39,7 +39,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                 while ($order = mysqli_fetch_assoc($orders_result)) {
                     $order_id   = $order['order_id'];
 
-                    $items_sql  = "SELECT oi.*, oi.sizes,
+                    $items_sql  = "SELECT oi.*,
                                           p.name   AS product_name,
                                           p.images AS product_image
                                    FROM   order_items oi
