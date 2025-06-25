@@ -85,6 +85,17 @@ try {
 <div class="category-header">
     <div class="container">
         <h1><?php echo htmlspecialchars($category['name']); ?></h1>
+
+        <?php if (!empty($category['image'])): 
+            $imagePath = 'category/' . basename($category['image']);
+        ?>
+            <div class="category-image" style="margin: 20px 0;">
+                <img src="<?php echo htmlspecialchars($imagePath); ?>" 
+                     alt="<?php echo htmlspecialchars($category['name']); ?>" 
+                     style="max-width: 100%; height: auto; border-radius: 10px;">
+            </div>
+        <?php endif; ?>
+
         <?php if (!empty($category['description'])): ?>
             <div class="category-description">
                 <?php echo htmlspecialchars($category['description']); ?>
