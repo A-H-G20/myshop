@@ -145,7 +145,7 @@
         <?php else: ?>
             <div class="products-grid">
                 <?php foreach ($products as $product): ?>
-                    <div class="product-card" onclick="window.location.href='product.php?id=<?php echo $product['product_id']; ?>'">
+                    <div class="product-card" onclick="window.location.href='details    .php?id=<?php echo $product['product_id']; ?>'">
                         <?php if (!empty($product['processed_images'])): ?>
                             <img src="<?php echo htmlspecialchars($product['processed_images'][0]); ?>" 
                                  alt="<?php echo htmlspecialchars($product['name']); ?>" 
