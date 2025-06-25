@@ -69,16 +69,25 @@ $total = $subtotal + $delivery_fee;
             <div class="order-items">
                 <h2 class="section-title">Order Items</h2>
                 <div class="items-list">
-                    <?php foreach ($items as $item): 
-                        $img = explode(',', $item['images'])[0];
+                    <?php foreach ($items as $item):
+                        $img_raw = explode(',', $item['images'])[0] ?? '';
+                        $img = !empty($img_raw) ? 'uploads/' . basename(trim($img_raw)) : '';
+
                         $total_item_price = $item['price_at_time'] * $item['quantity'];
                     ?>
                         <div class="order-item">
-                            <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="item-image" 
-                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                            <div class="item-image-fallback" style="display: none;">
-                                <div>📷<br>No Image</div>
-                            </div>
+                            <?php if (!empty($img) && file_exists($img)): ?>
+                                <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="item-image"
+                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="item-image-fallback" style="display: none;">
+                                    <div>📷<br>No Image</div>
+                                </div>
+                            <?php else: ?>
+                                <div class="item-image-fallback" style="display: flex;">
+                                    <div>📷<br>No Image</div>
+                                </div>
+                            <?php endif; ?>
+
                             <div class="item-details">
                                 <div class="item-name"><?= htmlspecialchars($item['name']) ?></div>
                                 <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> LBP each</div>
@@ -109,14 +118,6 @@ $total = $subtotal + $delivery_fee;
                         <div class="delivery-address"><?= nl2br(htmlspecialchars($order['shipping_address'])) ?></div>
                     </div>
                 </div>
-
-                <div class="action-buttons">
-                 
-                    <button class="action-btn btn-secondary" onclick="downloadInvoice()">Download Invoice</button>
-                    <?php if ($order['status'] === 'pending'): ?>
-                        <button class="action-btn btn-danger" onclick="cancelOrder()" id="cancelBtn">Cancel Order</button>
-                    <?php endif; ?>
-                </div>
             </div>
         </div>
     </div>
@@ -142,25 +143,27 @@ $total = $subtotal + $delivery_fee;
             btn.innerText = 'Cancelling...';
 
             fetch('cancel_order.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: 'order_id=<?= $order['order_id'] ?>'
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    btn.innerText = 'Order Cancelled';
-                    btn.classList.remove('btn-danger');
-                    btn.classList.add('btn-disabled');
-                    document.querySelector('.status-badge').textContent = 'Cancelled';
-                    document.querySelector('.status-badge').classList = 'status-badge status-cancelled';
-                    alert('Order cancelled successfully.');
-                } else {
-                    alert('Failed to cancel order.');
-                    btn.disabled = false;
-                    btn.innerText = 'Cancel Order';
-                }
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'order_id=<?= $order['order_id'] ?>'
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        btn.innerText = 'Order Cancelled';
+                        btn.classList.remove('btn-danger');
+                        btn.classList.add('btn-disabled');
+                        document.querySelector('.status-badge').textContent = 'Cancelled';
+                        document.querySelector('.status-badge').classList = 'status-badge status-cancelled';
+                        alert('Order cancelled successfully.');
+                    } else {
+                        alert('Failed to cancel order.');
+                        btn.disabled = false;
+                        btn.innerText = 'Cancel Order';
+                    }
+                });
         }
     }
 </script>

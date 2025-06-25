@@ -13,33 +13,26 @@ if ($user_id <= 0) {
 if (isset($_GET['order_id'])) {
     $order_id = intval($_GET['order_id']);
 
-    // Update order status to confirmed and paid
     $update = $pdo->prepare("UPDATE orders SET status = 'confirmed', payment_status = 'paid', updated_at = NOW() WHERE order_id = ? AND user_id = ?");
     $update->execute([$order_id, $user_id]);
 
-    // Get the cart ID
     $stmt = $pdo->prepare("SELECT cart_id FROM cart WHERE user_id = ?");
     $stmt->execute([$user_id]);
     $cart = $stmt->fetch();
 
     if ($cart) {
         $cart_id = $cart['cart_id'];
-
-        // Delete cart items
         $pdo->prepare("DELETE FROM cart_items WHERE cart_id = ?")->execute([$cart_id]);
-
-        // Delete the cart itself
         $pdo->prepare("DELETE FROM cart WHERE cart_id = ?")->execute([$cart_id]);
     }
 }
 
-$status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
-$sort_order = isset($_GET['sort']) ? $_GET['sort'] : 'desc';
+$status_filter = $_GET['status'] ?? 'all';
+$sort_order = $_GET['sort'] ?? 'desc';
 
 try {
     $query = "
-        SELECT o.*, 
-               COUNT(oi.order_item_id) as item_count
+        SELECT o.*, COUNT(oi.order_item_id) AS item_count
         FROM orders o
         LEFT JOIN order_items oi ON o.order_id = oi.order_id
         WHERE o.user_id = ?
@@ -58,7 +51,6 @@ try {
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get order items
     $orderIds = array_column($orders, 'order_id');
     $items = [];
 
@@ -86,6 +78,7 @@ try {
 
 <link rel="stylesheet" href="css/orders.css">
 <link rel="stylesheet" href="css/index.css">
+
 <div class="container">
     <div class="orders-container">
         <div class="page-header">
@@ -134,15 +127,18 @@ try {
                         <div class="order-items">
                             <h4><?= $order['item_count'] ?> Item(s)</h4>
                             <?php if (!empty($items[$order['order_id']])): ?>
-                                <?php foreach ($items[$order['order_id']] as $item): 
-                                    $img = explode(',', $item['images'])[0];
-                                ?>
-                                    <div class="order-item">
-                                        <?php if (!empty($img)): ?>
-                                            <img src="<?= htmlspecialchars($img) ?>" alt="<?= htmlspecialchars($item['name']) ?>" class="item-image">
-                                        <?php else: ?>
-                                            <div class="item-image-fallback">📷</div>
-                                        <?php endif; ?>
+                             <?php foreach ($items[$order['order_id']] as $item): 
+    $images = explode(',', $item['images']);
+    $rawImage = trim($images[0] ?? '');
+    $img = !empty($rawImage) ? 'uploads/' . basename($rawImage) : '';
+?>
+    <div class="order-item">
+        <?php if (!empty($img) && file_exists($img)): ?>
+            <img src="<?= htmlspecialchars($img); ?>" alt="<?= htmlspecialchars($item['name']); ?>" class="item-image">
+        <?php else: ?>
+            <div class="item-image-fallback">📷</div>
+        <?php endif; ?>
+
                                         <div class="item-details">
                                             <div class="item-name"><?= htmlspecialchars($item['name']) ?></div>
                                             <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> LBP</div>
@@ -167,7 +163,9 @@ try {
         <?php endif; ?>
     </div>
 </div>
+
 <?php include 'footer.php'; ?>
+
 <script>
     function filterOrders(status) {
         const url = new URL(window.location.href);
