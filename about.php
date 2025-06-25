@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Carrefour Lebanon</title>
+    <title>About Us - Myshop</title>
     <link rel="stylesheet" href="css/index.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<link rel="stylesheet" href="css/about.css">
+    <link rel="stylesheet" href="css/about.css">
 </head>
+
 <body>
     <?php include 'header.php'; ?>
 
     <div class="container">
-    
-        
+
+
         <div class="about-container">
             <!-- Hero Section -->
             <div class="hero-section">
-                <h1>About Carrefour Lebanon</h1>
-                <p>Welcome to Carrefour Lebanon, your trusted partner for quality products and exceptional shopping experiences. We are committed to serving the Lebanese community with excellence, innovation, and care.</p>
+                <h1>About Myshop</h1>
+                <p>Welcome to Myshop, your trusted partner for quality products and exceptional shopping experiences. We are committed to serving the Lebanese community with excellence, innovation, and care.</p>
             </div>
 
             <!-- Main Content Section -->
@@ -28,9 +30,9 @@
                         <span class="icon">🏢</span>
                         Our Story
                     </h2>
-                    <p>Carrefour Lebanon has been serving the Lebanese market for years, bringing international quality standards to local communities. We started with a vision to make quality products accessible to everyone, and today we continue to grow while staying true to our commitment to customer satisfaction and community service.</p>
+                    <p>Myshop has been serving the Lebanese market for years, bringing international quality standards to local communities. We started with a vision to make quality products accessible to everyone, and today we continue to grow while staying true to our commitment to customer satisfaction and community service.</p>
                 </div>
-                
+
                 <div class="content-card">
                     <h2>
                         <span class="icon">🎯</span>
@@ -67,7 +69,7 @@
                 </div>
             </div>
 
-    
+
             <!-- Team Section -->
             <div class="team-section">
                 <h2>Meet Our Leadership Team</h2>
@@ -121,14 +123,14 @@
                         <div class="contact-icon">✉️</div>
                         <div class="contact-info">
                             <h3>Email Us</h3>
-                            <p>info@carrefour-lebanon.com<br>support@carrefour-lebanon.com</p>
+                            <p>info@myshop.com<br>support@myshop.com</p>
                         </div>
                     </div>
                     <div class="contact-item">
                         <div class="contact-icon">🌐</div>
                         <div class="contact-info">
                             <h3>Follow Us</h3>
-                            <p>@CarrefourLebanon<br>Stay updated with our latest offers</p>
+                            <p>@Myshop<br>Stay updated with our latest offers</p>
                         </div>
                     </div>
                 </div>
@@ -171,7 +173,7 @@
                     <!-- Company Info -->
                     <div class="footer-column">
                         <div class="footer-logo">
-                            <h3>Carrefour Lebanon</h3>
+                            <h3>Myshop</h3>
                             <p>Your trusted partner for quality products and exceptional shopping experiences in Lebanon.</p>
                         </div>
                         <div class="social-links">
@@ -231,7 +233,7 @@
                                 <span class="contact-icon-footer">✉️</span>
                                 <div>
                                     <strong>Email:</strong><br>
-                                    info@carrefour-lebanon.com
+                                    info@myshop.com
                                 </div>
                             </div>
                             <div class="contact-item-footer">
@@ -249,7 +251,7 @@
             <!-- Footer Bottom -->
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
-                    <p>&copy; 2025 Carrefour Lebanon. All rights reserved.</p>
+                    <p>&copy; 2025 Myshop. All rights reserved.</p>
                     <div class="payment-methods">
                         <span>We Accept:</span>
                         <div class="payment-icons">
@@ -266,7 +268,7 @@
     <script>
         // Smooth scrolling for any internal links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
@@ -281,11 +283,11 @@
         // Add animation on scroll
         function animateOnScroll() {
             const elements = document.querySelectorAll('.content-card, .value-item, .team-member, .contact-item');
-            
+
             elements.forEach(element => {
                 const elementTop = element.getBoundingClientRect().top;
                 const elementVisible = 150;
-                
+
                 if (elementTop < window.innerHeight - elementVisible) {
                     element.style.opacity = '1';
                     element.style.transform = 'translateY(0)';
@@ -301,7 +303,7 @@
                 element.style.transform = 'translateY(20px)';
                 element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             });
-            
+
             animateOnScroll();
         });
 
@@ -310,7 +312,7 @@
         // Counter animation for statistics
         function animateCounters() {
             const counters = document.querySelectorAll('.stat-item h3');
-            
+
             counters.forEach(counter => {
                 const target = parseInt(counter.textContent.replace(/[^\d]/g, ''));
                 let current = 0;
@@ -345,44 +347,44 @@
         // Newsletter Form Handling
         document.getElementById('newsletterForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
+
             const form = this;
             const emailInput = document.getElementById('newsletterEmail');
             const submitBtn = form.querySelector('.newsletter-btn');
             const btnText = submitBtn.querySelector('.btn-text');
             const btnLoading = submitBtn.querySelector('.btn-loading');
-            
+
             // Validate email
             const email = emailInput.value.trim();
             if (!email || !isValidEmail(email)) {
                 showNewsletterMessage('Please enter a valid email address', 'error');
                 return;
             }
-            
+
             // Show loading state
             btnText.style.display = 'none';
             btnLoading.style.display = 'inline-block';
             submitBtn.disabled = true;
-            
+
             // Simulate API call (replace with actual newsletter signup)
             setTimeout(() => {
                 // Success simulation
                 showNewsletterMessage('Thank you for subscribing! Check your email for confirmation.', 'success');
                 emailInput.value = '';
-                
+
                 // Reset button
                 btnText.style.display = 'inline-block';
                 btnLoading.style.display = 'none';
                 submitBtn.disabled = false;
-                
+
             }, 2000);
         });
-        
+
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
         }
-        
+
         function showNewsletterMessage(message, type) {
             // Remove existing messages
             const existingMessages = document.querySelectorAll('.newsletter-message');
@@ -390,15 +392,15 @@
                 msg.style.animation = 'slideOut 0.3s ease-in';
                 setTimeout(() => msg.remove(), 300);
             });
-            
+
             // Create new message
             const messageDiv = document.createElement('div');
             messageDiv.className = 'newsletter-message';
             messageDiv.style.background = type === 'success' ? '#27ae60' : '#e74c3c';
             messageDiv.textContent = message;
-            
+
             document.body.appendChild(messageDiv);
-            
+
             // Auto remove after 5 seconds
             setTimeout(() => {
                 if (document.body.contains(messageDiv)) {
@@ -407,7 +409,7 @@
                 }
             }, 5000);
         }
-        
+
         // Smooth scroll to top functionality
         function addScrollToTop() {
             const scrollBtn = document.createElement('button');
@@ -430,23 +432,26 @@
                 transition: all 0.3s ease;
                 box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
             `;
-            
+
             scrollBtn.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
             });
-            
+
             scrollBtn.addEventListener('mouseenter', () => {
                 scrollBtn.style.background = '#2980b9';
                 scrollBtn.style.transform = 'translateY(-2px)';
             });
-            
+
             scrollBtn.addEventListener('mouseleave', () => {
                 scrollBtn.style.background = '#3498db';
                 scrollBtn.style.transform = 'translateY(0)';
             });
-            
+
             document.body.appendChild(scrollBtn);
-            
+
             // Show/hide scroll button
             window.addEventListener('scroll', () => {
                 if (window.pageYOffset > 300) {
@@ -456,9 +461,10 @@
                 }
             });
         }
-        
+
         // Initialize scroll to top button
         addScrollToTop();
     </script>
 </body>
+
 </html>

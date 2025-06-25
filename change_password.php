@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Change Password - Carrefour Lebanon</title>
+    <title>Change Password - Myshop</title>
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/profile.css">
 </head>

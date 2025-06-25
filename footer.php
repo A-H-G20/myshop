@@ -93,7 +93,7 @@
                                 <span class="contact-icon-footer">✉️</span>
                                 <div>
                                     <strong>Email:</strong><br>
-                                    info@carrefour-lebanon.com
+                                    info@Myshop.com
                                 </div>
                             </div>
                             <div class="contact-item-footer">
@@ -111,7 +111,7 @@
             <!-- Footer Bottom -->
             <div class="footer-bottom">
                 <div class="footer-bottom-content">
-                    <p>&copy; 2025 Carrefour Lebanon. All rights reserved.</p>
+                    <p>&copy; 2025 Myshop. All rights reserved.</p>
                     <div class="payment-methods">
                         <span>We Accept:</span>
                         <div class="payment-icons">

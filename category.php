@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Category - Carrefour Lebanon</title>
+    <title>Category - Myshop</title>
     <link rel="stylesheet" href="css/index.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="css/category.css">
@@ -32,14 +32,26 @@ try {
     }
 
     $sort = $_GET['sort'] ?? 'name_asc';
-    $sort_clause = match($sort) {
-        'name_desc' => 'ORDER BY products.name DESC',
-        'price_asc' => 'ORDER BY products.price ASC',
-        'price_desc' => 'ORDER BY products.price DESC',
-        'stock_asc' => 'ORDER BY products.stock_quantity ASC',
-        'stock_desc' => 'ORDER BY products.stock_quantity DESC',
-        default => 'ORDER BY products.name ASC',
-    };
+    switch ($sort) {
+        case 'name_desc':
+            $sort_clause = 'ORDER BY products.name DESC';
+            break;
+        case 'price_asc':
+            $sort_clause = 'ORDER BY products.price ASC';
+            break;
+        case 'price_desc':
+            $sort_clause = 'ORDER BY products.price DESC';
+            break;
+        case 'stock_asc':
+            $sort_clause = 'ORDER BY products.stock_quantity ASC';
+            break;
+        case 'stock_desc':
+            $sort_clause = 'ORDER BY products.stock_quantity DESC';
+            break;
+        default:
+            $sort_clause = 'ORDER BY products.name ASC';
+            break;
+    }
 
     $stmt = $pdo->prepare("
         SELECT products.*, categories.name AS category_name 
