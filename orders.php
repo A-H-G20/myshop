@@ -9,11 +9,34 @@ if ($user_id <= 0) {
     exit;
 }
 
+// If payment was successful, mark order as paid and clear the cart
+if (isset($_GET['order_id'])) {
+    $order_id = intval($_GET['order_id']);
+
+    // Update order status to confirmed and paid
+    $update = $pdo->prepare("UPDATE orders SET status = 'confirmed', payment_status = 'paid', updated_at = NOW() WHERE order_id = ? AND user_id = ?");
+    $update->execute([$order_id, $user_id]);
+
+    // Get the cart ID
+    $stmt = $pdo->prepare("SELECT cart_id FROM cart WHERE user_id = ?");
+    $stmt->execute([$user_id]);
+    $cart = $stmt->fetch();
+
+    if ($cart) {
+        $cart_id = $cart['cart_id'];
+
+        // Delete cart items
+        $pdo->prepare("DELETE FROM cart_items WHERE cart_id = ?")->execute([$cart_id]);
+
+        // Delete the cart itself
+        $pdo->prepare("DELETE FROM cart WHERE cart_id = ?")->execute([$cart_id]);
+    }
+}
+
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'all';
 $sort_order = isset($_GET['sort']) ? $_GET['sort'] : 'desc';
 
 try {
-    // Get all orders for the user
     $query = "
         SELECT o.*, 
                COUNT(oi.order_item_id) as item_count
@@ -35,7 +58,7 @@ try {
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get all items for all orders
+    // Get order items
     $orderIds = array_column($orders, 'order_id');
     $items = [];
 
@@ -67,6 +90,13 @@ try {
     <div class="orders-container">
         <div class="page-header">
             <h1 class="page-title">My Orders</h1>
+
+            <?php if (isset($_GET['order_id'])): ?>
+                <div class="success-message" style="background:#d4edda;padding:10px;border-radius:5px;margin-bottom:15px;">
+                    ✅ Your order was successfully placed!
+                </div>
+            <?php endif; ?>
+
             <div class="orders-filter">
                 <select class="filter-select" onchange="filterOrders(this.value)">
                     <option value="all" <?= $status_filter === 'all' ? 'selected' : '' ?>>All Orders</option>
