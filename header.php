@@ -1,7 +1,15 @@
   <?php
 session_start();
 ?>
+<style>
+    .profile-btn {
+    cursor: pointer;
+    font-size: 22px;
+    margin-left: 10px;
+    display: inline-block;
+}
 
+</style>
   <header class="header">
         <div class="header-content">
             <div class="logo">
@@ -31,6 +39,11 @@ session_start();
     <div class="cart-btn" onclick="window.location.href='login.php'">🛒</div>
 <?php endif; ?>
 
+<?php if (isset($_SESSION['user_id'])): ?>
+    <div class="profile-btn" onclick="window.location.href='profile.php'">👤</div>
+<?php else: ?>
+    <div class="profile-btn" onclick="window.location.href='login.php'">👤</div>
+<?php endif; ?>
 
             </div>
         </div>
