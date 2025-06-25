@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Management – Saadi Shop Admin</title>
+    <title>Order Management – MyShop Admin</title>
     <link rel="stylesheet" href="css/order.css">
 </head>
 

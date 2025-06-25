@@ -76,14 +76,14 @@ while ($stmt->fetchColumn() > 0) {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('email@gmail.com', 'Souk Al Dahab Store');
+                $mail->setFrom('email@gmail.com', 'MyShop Store');
                 $mail->addAddress($email, $first_name);
                 $mail->isHTML(true);
                 $mail->Subject = 'Verify Your Email - Lebanon Tourism';
                 $mail->Body = "
                     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;'>
                         <div style='text-align: center; padding-bottom: 20px;'>
-                            <h2 style='color: #028383;'>Welcome to Souk Al Dahab Store</h2>
+                            <h2 style='color: #028383;'>Welcome to Myshop Store</h2>
                         </div>
                         <p style='font-size: 16px; color: #333;'>Dear <b>{$first_name}</b>,</p>
                         <p style='font-size: 16px; color: #555;'>Thank you for registering with us. To complete your registration, please use the following verification code:</p>
@@ -92,7 +92,7 @@ while ($stmt->fetchColumn() > 0) {
                         </div>
                         <p style='font-size: 16px; color: #555;'>If you did not initiate this registration, please disregard this email.</p>
                         <p style='font-size: 16px; color: #555;'>Best regards,</p>
-                        <p style='font-size: 16px; color: #028383;'><b>Souk Al Dahab Administrator</b></p>
+                        <p style='font-size: 16px; color: #028383;'><b>Myshop Administrator</b></p>
                     </div>";
 
                 $mail->send();

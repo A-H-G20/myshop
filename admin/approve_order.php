@@ -45,11 +45,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
-            $mail->setFrom('your_email@gmail.com', 'Saadi Shop Team');
+            $mail->setFrom('your_email@gmail.com', 'MyShop Team');
             $mail->addAddress($email, $firstName);
 
             $mail->isHTML(true);
-            $mail->Subject = "Your Saadi shop Order Has Been Approved!";
+            $mail->Subject = "Your MyShop Order Has Been Approved!";
           $mail->Body = "
     <div style='font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px; color: #333333;'>
         <h2 style='color: #8bc34a;'>Hi $firstName,</h2>
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
         <p>We’ll notify you again once it’s out for delivery. Get ready!</p>
         <hr style='margin: 20px 0; border-top: 1px solid #dcedc8;'>
         <p style='color: #757575;'>Thank you for shopping with us 💚</p>
-        <p style='color: #757575;'>– Saadi shop Team</p>
+        <p style='color: #757575;'>– MyShop Team</p>
     </div>
 ";
 

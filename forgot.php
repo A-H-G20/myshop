@@ -55,10 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
-                $mail->setFrom('your_email@gmail.com', 'SaadiShop Team');
+                $mail->setFrom('your_email@gmail.com', 'Myshop Team');
                 $mail->addAddress($email, $user['first_name']);
                 $mail->isHTML(true);
-                $mail->Subject = "Your SaadiShop Password Reset Code";
+                $mail->Subject = "Your Myshop Password Reset Code";
                 $mail->Body = "
                     <h2>Password Reset Request</h2>
                     <p>Hello <strong>{$user['first_name']}</strong>,</p>

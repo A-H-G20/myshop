@@ -111,7 +111,7 @@ try {
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
-    $mail->setFrom('email@gmail.com', 'Souk Al Dahab Store');
+    $mail->setFrom('email@gmail.com', 'Myshop Store');
     $mail->addAddress($email, $first_name);
     $mail->isHTML(true);
     $mail->Subject = 'Your Order is Being Processed';
@@ -126,7 +126,7 @@ try {
             <p style='font-size: 16px; color: #555;'>Shipping Address: <strong>$shipping_address</strong><br>Billing Address (City): <strong>$billing_address</strong></p>
             <p style='font-size: 16px; color: #555;'>Total: <strong>$$total_amount USD</strong></p>
             <p style='font-size: 16px; color: #555;'>Thank you for shopping with us!</p>
-            <p style='font-size: 16px; color: #028383;'><b>Souk Al Dahab Team</b></p>
+            <p style='font-size: 16px; color: #028383;'><b>Myshop Team</b></p>
         </div>
     ";
 
