@@ -49,10 +49,9 @@
                         <h4>Quick Links</h4>
                         <ul class="footer-links">
                             <li><a href="index.php">Home</a></li>
-                            <li><a href="products.php">Products</a></li>
-                            <li><a href="categories.php">Categories</a></li>
+                        
                             <li><a href="about.php">About Us</a></li>
-                            <li><a href="contact.php">Contact</a></li>
+                          
                             <li><a href="cart.php">Shopping Cart</a></li>
                         </ul>
                     </div>
@@ -61,12 +60,10 @@
                     <div class="footer-column">
                         <h4>Customer Service</h4>
                         <ul class="footer-links">
-                            <li><a href="faq.php">FAQ</a></li>
-                            <li><a href="shipping.php">Shipping Info</a></li>
-                            <li><a href="returns.php">Returns & Exchanges</a></li>
-                            <li><a href="privacy.php">Privacy Policy</a></li>
-                            <li><a href="terms.php">Terms & Conditions</a></li>
-                            <li><a href="support.php">Customer Support</a></li>
+                         
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="#">Customer Support</a></li>
                         </ul>
                     </div>
 
@@ -89,20 +86,8 @@
                                     +961 8 123 456
                                 </div>
                             </div>
-                            <div class="contact-item-footer">
-                                <span class="contact-icon-footer">✉️</span>
-                                <div>
-                                    <strong>Email:</strong><br>
-                                    info@Myshop.com
-                                </div>
-                            </div>
-                            <div class="contact-item-footer">
-                                <span class="contact-icon-footer">🕒</span>
-                                <div>
-                                    <strong>Hours:</strong><br>
-                                    Mon-Sun: 8AM - 10PM
-                                </div>
-                            </div>
+                          
+                            
                         </div>
                     </div>
                 </div>
