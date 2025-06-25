@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 25, 2025 at 11:47 AM
--- Server version: 9.1.0
--- PHP Version: 8.3.14
+-- Generation Time: Jun 25, 2025 at 07:12 PM
+-- Server version: 8.3.0
+-- PHP Version: 8.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,15 +34,14 @@ CREATE TABLE IF NOT EXISTS `cart` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`cart_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `cart`
 --
 
 INSERT INTO `cart` (`cart_id`, `user_id`, `created_at`) VALUES
-(8, 11, '2025-06-25 10:52:16'),
-(7, 11, '2025-06-25 10:32:09');
+(12, 6, '2025-06-25 19:08:43');
 
 -- --------------------------------------------------------
 
@@ -60,14 +59,14 @@ CREATE TABLE IF NOT EXISTS `cart_items` (
   PRIMARY KEY (`cart_item_id`),
   KEY `cart_id` (`cart_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `cart_items`
 --
 
 INSERT INTO `cart_items` (`cart_item_id`, `cart_id`, `product_id`, `quantity`, `created_at`) VALUES
-(12, 8, 11, 2, '2025-06-25 10:52:16');
+(17, 12, 11, 1, '2025-06-25 19:08:43');
 
 -- --------------------------------------------------------
 
@@ -137,17 +136,16 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `status`, `shipping_address`, `billing_address`, `payment_method`, `payment_status`, `created_at`, `updated_at`) VALUES
-(1, 6, 261.00, 'processing', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', 'cash_on_delivery', '', '2025-05-24 21:27:41', '2025-05-24 21:27:41'),
-(2, 6, 1305.00, 'processing', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', 'cash_on_delivery', '', '2025-05-24 21:28:09', '2025-05-24 21:28:09'),
-(3, 6, 261.00, 'processing', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', 'cash_on_delivery', '', '2025-05-24 21:30:36', '2025-05-24 21:30:36'),
-(4, 6, 261.00, 'completed', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', '{\"first_name\":\"Green\",\"last_name\":\"Customer\",\"address_line_1\":\"123 Market St\",\"address_line_2\":\"\",\"city\":\"GreenCity\",\"state\":\"GR\",\"zip_code\":\"12345\",\"country\":\"EcoLand\"}', 'cash_on_delivery', '', '2025-05-24 21:32:00', '2025-06-25 08:15:45');
+(5, 6, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 18:31:52', '2025-06-25 18:41:12'),
+(6, 6, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 19:06:51', '2025-06-25 19:07:33'),
+(7, 6, 357.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 19:07:52', '2025-06-25 19:08:12');
 
 -- --------------------------------------------------------
 
@@ -166,17 +164,17 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   PRIMARY KEY (`order_item_id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `order_items`
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `created_at`) VALUES
-(1, 1, 7, 1, 261.00, '2025-05-24 21:27:41'),
-(2, 2, 7, 5, 261.00, '2025-05-24 21:28:09'),
-(3, 3, 7, 1, 261.00, '2025-05-24 21:30:36'),
-(4, 4, 7, 1, 261.00, '2025-05-24 21:32:00');
+(8, 7, 12, 1, 12.00, '2025-06-25 19:07:52'),
+(7, 7, 11, 1, 345.00, '2025-06-25 19:07:52'),
+(6, 6, 11, 1, 345.00, '2025-06-25 19:06:51'),
+(5, 5, 11, 1, 345.00, '2025-06-25 18:31:52');
 
 -- --------------------------------------------------------
 
@@ -243,7 +241,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `phone`, `password`, `verification_code`, `email_verified_at`, `role`, `address`, `city`, `date_of_birth`, `gender`, `verified`, `reset_code`, `reset_code_expires`, `created_at`) VALUES
-(11, 'Ahmad', 'Ghosen', 'ahmad.ghosen', 'ahmadghosen200@gmail.com', '79666666', '$2y$10$1Er1TiVPF0adCsvwnCLVBemf4b.S/YvAuvDDxU7cPvEH8NSJJP.r2', NULL, '2025-06-25 13:06:30', 'admin', 'bekaa', 'MARJ', '2025-06-23', 'male', 1, NULL, '0000-00-00 00:00:00', '2025-06-25 10:06:06');
+(6, 'Ahmad', 'Ghosen', 'ahmad.ghosen', 'ahmadghosen200@gmail.com', '79666666', '$2y$10$1Er1TiVPF0adCsvwnCLVBemf4b.S/YvAuvDDxU7cPvEH8NSJJP.r2', NULL, '2025-06-25 13:06:30', 'admin', 'bekaa', 'MARJ', '2025-06-23', 'male', 1, NULL, '0000-00-00 00:00:00', '2025-06-25 10:06:06');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
