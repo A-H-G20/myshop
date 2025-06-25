@@ -183,7 +183,7 @@ try {
         </div>
     <?php endif; ?>
 </div>
-
+<?php include 'footer.php'; ?>
 <script>
 function changeSortOrder() {
     const sortSelect = document.getElementById('sort');

@@ -121,7 +121,7 @@ $total = $subtotal + $delivery_fee;
         </div>
     </div>
 </div>
-
+<?php include 'footer.php'; ?>
 <script>
     function trackOrder() {
         alert("Tracking info sent to your email.");

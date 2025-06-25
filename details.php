@@ -165,7 +165,7 @@ try {
         <span class="zoom-close" onclick="closeImageZoom()">&times;</span>
         <img id="zoomImage" src="" alt="">
     </div>
-
+<?php include 'footer.php'; ?>
     <script>
         // Image handling functions
         function changeMainImage(src, thumbnail) {

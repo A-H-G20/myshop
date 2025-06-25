@@ -137,7 +137,7 @@ try {
         <?php endif; ?>
     </div>
 </div>
-
+<?php include 'footer.php'; ?>
 <script>
     function filterOrders(status) {
         const url = new URL(window.location.href);
