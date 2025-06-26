@@ -1,4 +1,6 @@
- <footer class="site-footer">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<footer class="site-footer">
         <div class="footer-content">
             <!-- Newsletter Section -->
             <div class="newsletter-section">
@@ -37,11 +39,12 @@
                             <p>Your trusted partner for quality products and exceptional shopping experiences in Lebanon.</p>
                         </div>
                         <div class="social-links">
-                            <a href="#" class="social-link" title="Facebook">📘</a>
-                            <a href="#" class="social-link" title="Instagram">📷</a>
-                            <a href="#" class="social-link" title="Twitter">🐦</a>
-                            <a href="#" class="social-link" title="WhatsApp">💬</a>
-                        </div>
+    <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+    <a href="#" class="social-link" title="Instagram"><i class="fab fa-instagram"></i></a>
+    <a href="#" class="social-link" title="Twitter"><i class="fab fa-twitter"></i></a>
+    <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+</div>
+
                     </div>
 
                     <!-- Quick Links -->
@@ -147,3 +150,21 @@ document.getElementById('newsletterForm').addEventListener('submit', function(e)
     });
 });
 </script>
+<style>
+    .social-links {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.social-link {
+    font-size: 24px;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.social-link:hover {
+    color:rgb(207, 207, 207);
+}
+
+</style>
