@@ -101,7 +101,7 @@
                         <span>We Accept:</span>
                         <div class="payment-icons">
                             <span class="payment-icon">💳</span>
-                            <span class="payment-icon">💰</span>
+                           
                             <span class="payment-icon">📱</span>
                         </div>
                     </div>
