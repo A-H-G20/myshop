@@ -39,16 +39,38 @@ try {
         exit;
     }
 
-    // Parse and fix image paths
-    $images = [];
-    if (!empty($product['images'])) {
-        $decoded_images = json_decode($product['images'], true);
-        $raw_images = is_array($decoded_images) ? $decoded_images : [$product['images']];
-        $images = array_map(function($image) {
-            $filename = basename($image); // Just get file name
-            return 'uploads/' . rawurlencode($filename);
-        }, $raw_images);
+    // Parse and fix image paths with maximum of 4 images
+   // Parse comma-separated image paths
+$images = [];
+$default_image = 'uploads/default-product.jpg';
+
+if (!empty($product['images'])) {
+    $raw_images = explode(',', $product['images']); // Split by comma
+    foreach ($raw_images as $img) {
+        $img = trim($img); // Clean whitespace
+        if (empty($img)) continue;
+
+        // Normalize path
+        if (strpos($img, 'uploads/') === false) {
+            $img = 'uploads/' . basename($img);
+        } else {
+            $img = str_replace('../', '', $img); // remove ../ if exists
+        }
+
+        if (!in_array($img, $images)) {
+            $images[] = $img;
+        }
     }
+}
+
+// Fallback to default image
+if (empty($images)) {
+    $images = [$default_image];
+}
+
+    
+    // Debug: Log the images array (remove this in production)
+    error_log("Product ID: " . $product_id . " - Images found: " . count($images) . " - " . implode(', ', $images));
 
     // Determine stock status
     $stock_status = '';
@@ -70,44 +92,38 @@ try {
 }
 ?>
 
-
     <div class="container">
-
-        
         <div class="product-details">
             <div class="product-images">
-                <?php if (!empty($images)): ?>
-                    <img src="<?php echo htmlspecialchars($images[0]); ?>" 
-                         alt="<?php echo htmlspecialchars($product['name']); ?>" 
-                         class="main-image" 
-                         id="mainImage"
-                         onclick="openImageZoom(this.src)"
-                         onerror="this.style.display='none'; document.querySelector('.main-image-fallback').style.display='flex';">
-                    
-                    <div class="main-image-fallback">
-                        <div>
-                            <i>📷</i><br>
-                            Image Not Available
-                        </div>
+                <!-- Main Image Display -->
+                <img src="<?php echo htmlspecialchars($images[0]); ?>" 
+                     alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                     class="main-image" 
+                     id="mainImage"
+                     onclick="openImageZoom(this.src)"
+                     onerror="console.log('Main image failed:', this.src); this.style.display='none'; document.querySelector('.main-image-fallback').style.display='flex';"
+                     onload="console.log('Main image loaded:', this.src);">
+                
+                <div class="main-image-fallback">
+                    <div>
+                        <i>📷</i><br>
+                        Image Not Available
                     </div>
-                    
-                    <?php if (count($images) > 1): ?>
-                        <div class="thumbnail-images">
-                            <?php foreach($images as $index => $image): ?>
-                                <img src="<?php echo htmlspecialchars($image); ?>" 
-                                     alt="<?php echo htmlspecialchars($product['name']); ?> - View <?php echo $index + 1; ?>" 
-                                     class="thumbnail <?php echo $index === 0 ? 'active' : ''; ?>" 
-                                     onclick="changeMainImage('<?php echo htmlspecialchars($image); ?>', this)"
-                                     onerror="this.classList.add('error'); this.onclick=null; this.style.opacity='0.3';">
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="main-image-fallback" style="display: flex;">
-                        <div>
-                            <i>📷</i><br>
-                            No Image Available
-                        </div>
+                </div>
+                
+              
+                
+                <!-- Thumbnail Images (show only if more than 1 image) -->
+                <?php if (count($images) > 1): ?>
+                    <div class="thumbnail-images">
+                        <?php foreach($images as $index => $image): ?>
+                            <img src="<?php echo htmlspecialchars($image); ?>" 
+                                 alt="<?php echo htmlspecialchars($product['name']); ?> - View <?php echo $index + 1; ?>" 
+                                 class="thumbnail <?php echo $index === 0 ? 'active' : ''; ?>" 
+                                 onclick="changeMainImage('<?php echo htmlspecialchars($image); ?>', this)"
+                                 onerror="console.log('Thumbnail failed:', this.src); this.classList.add('error'); this.onclick=null; this.style.opacity='0.3';"
+                                 onload="console.log('Thumbnail loaded:', this.src);">
+                        <?php endforeach; ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -134,10 +150,14 @@ try {
                     </div>
                     
                    <div class="meta-item">
-    <span><strong>Category:</strong></span>
-    <span><?php echo htmlspecialchars($product['category_name'] ?? 'Uncategorized'); ?></span>
-</div>
-
+                        <span><strong>Category:</strong></span>
+                        <span><?php echo htmlspecialchars($product['category_name'] ?? 'Uncategorized'); ?></span>
+                    </div>
+                    
+                    <div class="meta-item">
+                        <span><strong>Images:</strong></span>
+                        <span><?php echo count($images); ?> image<?php echo count($images) > 1 ? 's' : ''; ?> available</span>
+                    </div>
                 </div>
                 
                 <?php if ($product['stock_quantity'] > 0): ?>
@@ -165,7 +185,9 @@ try {
         <span class="zoom-close" onclick="closeImageZoom()">&times;</span>
         <img id="zoomImage" src="" alt="">
     </div>
+
 <?php include 'footer.php'; ?>
+
     <script>
         // Image handling functions
         function changeMainImage(src, thumbnail) {
@@ -363,6 +385,14 @@ try {
                     closeImageZoom();
                 }
             });
+            
+            // Image error handling for better fallback
+            const mainImage = document.getElementById('mainImage');
+            if (mainImage) {
+                mainImage.addEventListener('error', function() {
+                    console.log('Main image failed to load, showing fallback');
+                });
+            }
         });
     </script>
 </body>

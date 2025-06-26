@@ -29,11 +29,11 @@
     }
     ?>
 
-    <!-- Free Delivery Banner -->
+    <!-- Free Delivery Banner 
     <div class="free-delivery">
         <div class="free-delivery-badge">FREE 🚚 DELIVERY</div>
-        <div>Free delivery on orders over 4.5 million $ on same day orders</div>
-    </div>
+        <div>Free delivery on orders over 50 $ on same day orders</div>
+    </div>-->
 
   <div class="new-arrivals">
     <div class="products-grid" style="position: relative;">
@@ -41,39 +41,39 @@
             <div class="product-card" data-product-id="<?php echo $product['product_id']; ?>">
               
                 
-                <div class="product-image" onclick="openProductDetails(<?php echo $product['product_id']; ?>)" style="cursor: pointer;">
-                    <?php if(!empty($product['images'])): ?>
-                        <?php 
-                        // Handle both JSON array and single image string
-                        $images = json_decode($product['images'], true);
-                        if (json_last_error() === JSON_ERROR_NONE && is_array($images)) {
-                            // It's a valid JSON array
-                            $firstImage = $images[0];
-                        } else {
-                            // It's a single image string
-                            $firstImage = $product['images'];
-                        }
-                        
-                        // Convert relative path to web-accessible path
-                        $imagePath = str_replace('../uploads/', 'uploads/', $firstImage);
-                        // Or use absolute path from document root
-                        // $imagePath = '/path/to/your/project/' . str_replace('../', '', $firstImage);
-                        ?>
-                        <img src="<?php echo htmlspecialchars($imagePath); ?>" 
-                             alt="<?php echo htmlspecialchars($product['name']); ?>" 
-                             style="width: 100%; height: 100%; object-fit: cover;"
-                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                        
-                        <!-- Fallback div in case image fails to load -->
-                        <div style="background: #f0f0f0; height: 100%; display: none; align-items: center; justify-content: center; color: #666;">
-                            <?php echo htmlspecialchars($product['name']); ?>
-                        </div>
-                    <?php else: ?>
-                        <div style="background: #f0f0f0; height: 100%; display: flex; align-items: center; justify-content: center; color: #666;">
-                            <?php echo htmlspecialchars($product['name']); ?>
-                        </div>
-                    <?php endif; ?>
-                </div>
+               <div class="product-image" onclick="openProductDetails(<?php echo $product['product_id']; ?>)" style="cursor: pointer;">
+    <?php if (!empty($product['images'])): ?>
+        <?php 
+        // Handle comma-separated string of image paths
+        $imageParts = explode(',', $product['images']);
+        $firstImage = trim($imageParts[0]); // get the first image and trim whitespace
+
+        // Convert relative path to a web-accessible path
+        $imagePath = str_replace(['../', './'], '', $firstImage);
+        ?>
+        
+        <?php if (!empty($imagePath)): ?>
+            <img src="<?php echo htmlspecialchars($imagePath); ?>" 
+                 alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                 style="width: 100%; height: 100%; object-fit: cover;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+
+            <!-- Fallback if image fails to load -->
+            <div style="background: #f0f0f0; height: 100%; display: none; align-items: center; justify-content: center; color: #666;">
+                <?php echo htmlspecialchars($product['name']); ?>
+            </div>
+        <?php else: ?>
+            <div style="background: #f0f0f0; height: 100%; display: flex; align-items: center; justify-content: center; color: #666;">
+                <?php echo htmlspecialchars($product['name']); ?>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <div style="background: #f0f0f0; height: 100%; display: flex; align-items: center; justify-content: center; color: #666;">
+            <?php echo htmlspecialchars($product['name']); ?>
+        </div>
+    <?php endif; ?>
+</div>
+
                 
                 <div class="product-price" onclick="openProductDetails(<?php echo $product['product_id']; ?>)" style="cursor: pointer;">
                     <?php echo number_format($product['price'], 0, '.', ','); ?> <span style="font-size: 12px;">$</span>

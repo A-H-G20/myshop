@@ -38,17 +38,13 @@ session_start();
                 
              
                 
-               <?php if (isset($_SESSION['user_id'])): ?>
+            <?php if (isset($_SESSION['user_id'])): ?>
     <div class="cart-btn" onclick="window.location.href='cart.php'">🛒</div>
-<?php else: ?>
-    <div class="cart-btn" onclick="window.location.href='login.php'">🛒</div>
 <?php endif; ?>
-
 <?php if (isset($_SESSION['user_id'])): ?>
     <div class="profile-btn" onclick="window.location.href='profile.php'">👤</div>
-<?php else: ?>
-    <div class="profile-btn" onclick="window.location.href='login.php'">👤</div>
 <?php endif; ?>
+
 
             </div>
         </div>
@@ -68,7 +64,10 @@ $categories = $category_stmt->fetchAll(PDO::FETCH_ASSOC);
                 <?php echo htmlspecialchars($cat['name']); ?>
             </a>
         <?php endforeach; ?>
-         <a href="orders.php" class="nav-item ">My Order</a>
+         <?php if (isset($_SESSION['user_id'])): ?>
+    <a href="orders.php" class="nav-item">My Order</a>
+<?php endif; ?>
+
         <a href="about.php" class="nav-item ">About Us</a>
     </div>
 </nav>
