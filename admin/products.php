@@ -45,8 +45,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $sizes = implode(',', array_map('trim', $sizesArray));
                 }
 
-                $query = "INSERT INTO products (name, description, price, stock_quantity, category_id, images, sizes, created_at) 
-                         VALUES ('$name', '$description', $price, $stock, $category_id, '$images', '$sizes', NOW())";
+                // Handle colors - convert array to comma-separated string
+                $colors = '';
+                if (isset($_POST['colors']) && is_array($_POST['colors'])) {
+                    $colorsArray = array_filter($_POST['colors'], function($color) {
+                        return !empty(trim($color));
+                    });
+                    $colors = implode(',', array_map('trim', $colorsArray));
+                }
+
+                $query = "INSERT INTO products (name, description, price, stock_quantity, category_id, images, sizes, colors, created_at) 
+                         VALUES ('$name', '$description', $price, $stock, $category_id, '$images', '$sizes', '$colors', NOW())";
                 mysqli_query($conn, $query);
                 header("Location: products.php");
                 exit;
@@ -68,6 +77,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $sizes = implode(',', array_map('trim', $sizesArray));
                 }
 
+                // Handle colors - convert array to comma-separated string
+                $colors = '';
+                if (isset($_POST['colors']) && is_array($_POST['colors'])) {
+                    $colorsArray = array_filter($_POST['colors'], function($color) {
+                        return !empty(trim($color));
+                    });
+                    $colors = implode(',', array_map('trim', $colorsArray));
+                }
+
                 $uploadedImages = [];
                 if (isset($_FILES['images']) && $_FILES['images']['tmp_name'][0] != '') {
                     $uploadDir = '../uploads/';
@@ -82,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                     $images = implode(',', $uploadedImages);
                     $query = "UPDATE products SET name='$name', description='$description', price=$price, 
-                             stock_quantity=$stock, category_id=$category_id, images='$images', sizes='$sizes' WHERE product_id=$product_id";
+                             stock_quantity=$stock, category_id=$category_id, images='$images', sizes='$sizes', colors='$colors' WHERE product_id=$product_id";
                 } else {
                     $query = "UPDATE products SET name='$name', description='$description', price=$price, 
-                             stock_quantity=$stock, category_id=$category_id, sizes='$sizes' WHERE product_id=$product_id";
+                             stock_quantity=$stock, category_id=$category_id, sizes='$sizes', colors='$colors' WHERE product_id=$product_id";
                 }
                 mysqli_query($conn, $query);
                 header("Location: products.php");
@@ -142,7 +160,84 @@ $productsResult = mysqli_query($conn, $productsQuery);
     <link rel="stylesheet" href="css/products.css">
     <title>Products Management - MyShop</title>
     <style>
-       
+        .color-input-group, .size-input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .color-input, .size-input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+        
+        .remove-color-btn, .remove-size-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-color-btn, .add-size-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+        
+        .colors-container, .sizes-container {
+            margin-bottom: 10px;
+        }
+        
+        .colors-display, .sizes-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        
+        .color-tag, .size-tag {
+            display: inline-block;
+            background: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+        
+        .color-tag {
+            background: #6f42c1;
+        }
+        
+        .no-colors, .no-sizes {
+            color: #999;
+            font-style: italic;
+            font-size: 12px;
+        }
+        
+        .color-preview {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            border: 1px solid #ddd;
+            vertical-align: middle;
+        }
     </style>
 </head>
 
@@ -172,6 +267,7 @@ $productsResult = mysqli_query($conn, $productsQuery);
                         <th>Price</th>
                         <th>Stock</th>
                         <th>Sizes</th>
+                        <th>Colors</th>
                         <th>Created</th>
                         <th>Actions</th>
                     </tr>
@@ -193,8 +289,7 @@ $productsResult = mysqli_query($conn, $productsQuery);
                                             if (!empty($image)) {
                                                 $webPath = getWebPath($image);
                                                 ?>
-                                               <img src="../<?= htmlspecialchars($webPath) ?>
-" 
+                                               <img src="../<?= htmlspecialchars($webPath) ?>" 
                                                      alt="Product Image" 
                                                      class="product-thumb" 
                                                      style="width: 50px; height: 50px; object-fit: cover; margin: 2px; border-radius: 4px; border: 1px solid #ddd;"
@@ -231,6 +326,28 @@ $productsResult = mysqli_query($conn, $productsQuery);
                                         }
                                     } else {
                                         echo '<span class="no-sizes">No sizes</span>';
+                                    }
+                                    ?>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="colors-display">
+                                    <?php 
+                                    if (!empty($product['colors'])) {
+                                        $colors = explode(',', $product['colors']);
+                                        foreach ($colors as $color) {
+                                            $color = trim($color);
+                                            if (!empty($color)) {
+                                                // Check if color is a hex color code
+                                                if (preg_match('/^#[a-f0-9]{6}$/i', $color)) {
+                                                    echo '<span class="color-tag"><span class="color-preview" style="background-color: ' . htmlspecialchars($color) . ';"></span>' . htmlspecialchars(strtoupper($color)) . '</span>';
+                                                } else {
+                                                    echo '<span class="color-tag">' . htmlspecialchars(ucfirst($color)) . '</span>';
+                                                }
+                                            }
+                                        }
+                                    } else {
+                                        echo '<span class="no-colors">No colors</span>';
                                     }
                                     ?>
                                 </div>
@@ -297,15 +414,30 @@ $productsResult = mysqli_query($conn, $productsQuery);
                 </div>
 
                 <div class="form-group">
-                    <label>Product Sizes</label>
+                    <label>Product Sizes (Optional)</label>
+                    <small style="color: #666; display: block; margin-bottom: 5px;">Enter sizes like S, M, L, XL, 32, 34, etc.</small>
                     <div id="addSizesContainer" class="sizes-container">
                         <div class="size-input-group">
-                            <input type="text" name="sizes[]" class="size-input" placeholder="e.g., S, M, L, XL">
+                            <input type="text" name="sizes[]" class="size-input" placeholder="e.g., S, M, L, XL, 32, 34">
                             <button type="button" class="remove-size-btn" onclick="removeSize(this)">×</button>
                         </div>
                     </div>
                     <button type="button" class="add-size-btn" onclick="addSizeInput('addSizesContainer')">
                         <i class="fas fa-plus"></i> Add Size
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Colors (Optional)</label>
+                    <small style="color: #666; display: block; margin-bottom: 5px;">Enter colors like Red, Blue, #FF0000, etc.</small>
+                    <div id="addColorsContainer" class="colors-container">
+                        <div class="color-input-group">
+                            <input type="text" name="colors[]" class="color-input" placeholder="e.g., Red, Blue, #FF0000">
+                            <button type="button" class="remove-color-btn" onclick="removeColor(this)">×</button>
+                        </div>
+                    </div>
+                    <button type="button" class="add-color-btn" onclick="addColorInput('addColorsContainer')">
+                        <i class="fas fa-plus"></i> Add Color
                     </button>
                 </div>
 
@@ -361,12 +493,24 @@ $productsResult = mysqli_query($conn, $productsQuery);
                 </div>
 
                 <div class="form-group">
-                    <label>Product Sizes</label>
+                    <label>Product Sizes (Optional)</label>
+                    <small style="color: #666; display: block; margin-bottom: 5px;">Enter sizes like S, M, L, XL, 32, 34, etc.</small>
                     <div id="editSizesContainer" class="sizes-container">
                         <!-- Sizes will be populated by JavaScript -->
                     </div>
                     <button type="button" class="add-size-btn" onclick="addSizeInput('editSizesContainer')">
                         <i class="fas fa-plus"></i> Add Size
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Colors (Optional)</label>
+                    <small style="color: #666; display: block; margin-bottom: 5px;">Enter colors like Red, Blue, #FF0000, etc.</small>
+                    <div id="editColorsContainer" class="colors-container">
+                        <!-- Colors will be populated by JavaScript -->
+                    </div>
+                    <button type="button" class="add-color-btn" onclick="addColorInput('editColorsContainer')">
+                        <i class="fas fa-plus"></i> Add Color
                     </button>
                 </div>
 
@@ -402,7 +546,7 @@ $productsResult = mysqli_query($conn, $productsQuery);
             const sizeGroup = document.createElement('div');
             sizeGroup.className = 'size-input-group';
             sizeGroup.innerHTML = `
-                <input type="text" name="sizes[]" class="size-input" placeholder="e.g., S, M, L, XL">
+                <input type="text" name="sizes[]" class="size-input" placeholder="e.g., S, M, L, XL, 32, 34">
                 <button type="button" class="remove-size-btn" onclick="removeSize(this)">×</button>
             `;
             container.appendChild(sizeGroup);
@@ -418,6 +562,27 @@ $productsResult = mysqli_query($conn, $productsQuery);
             }
         }
 
+        function addColorInput(containerId) {
+            const container = document.getElementById(containerId);
+            const colorGroup = document.createElement('div');
+            colorGroup.className = 'color-input-group';
+            colorGroup.innerHTML = `
+                <input type="text" name="colors[]" class="color-input" placeholder="e.g., Red, Blue, #FF0000">
+                <button type="button" class="remove-color-btn" onclick="removeColor(this)">×</button>
+            `;
+            container.appendChild(colorGroup);
+        }
+
+        function removeColor(button) {
+            const container = button.parentElement.parentElement;
+            if (container.children.length > 1) {
+                button.parentElement.remove();
+            } else {
+                // Clear the input instead of removing if it's the last one
+                button.parentElement.querySelector('.color-input').value = '';
+            }
+        }
+
         function populateSizes(containerId, sizesString) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -430,7 +595,7 @@ $productsResult = mysqli_query($conn, $productsQuery);
                         const sizeGroup = document.createElement('div');
                         sizeGroup.className = 'size-input-group';
                         sizeGroup.innerHTML = `
-                            <input type="text" name="sizes[]" class="size-input" value="${size}" placeholder="e.g., S, M, L, XL">
+                            <input type="text" name="sizes[]" class="size-input" value="${size}" placeholder="e.g., S, M, L, XL, 32, 34">
                             <button type="button" class="remove-size-btn" onclick="removeSize(this)">×</button>
                         `;
                         container.appendChild(sizeGroup);
@@ -444,63 +609,92 @@ $productsResult = mysqli_query($conn, $productsQuery);
             }
         }
 
+        function populateColors(containerId, colorsString) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            if (colorsString && colorsString.trim() !== '') {
+                const colors = colorsString.split(',');
+                colors.forEach(color => {
+                    color = color.trim();
+                    if (color) {
+                        const colorGroup = document.createElement('div');
+                        colorGroup.className = 'color-input-group';
+                        colorGroup.innerHTML = `
+                            <input type="text" name="colors[]" class="color-input" value="${color}" placeholder="e.g., Red, Blue, #FF0000">
+                            <button type="button" class="remove-color-btn" onclick="removeColor(this)">×</button>
+                        `;
+                        container.appendChild(colorGroup);
+                    }
+                });
+            }
+            
+            // Always ensure at least one color input exists
+            if (container.children.length === 0) {
+                addColorInput(containerId);
+            }
+        }
+
         function openAddModal() {
             document.getElementById('addModal').style.display = 'block';
         }
 
-       function openEditModal(product) {
-    document.getElementById('edit_product_id').value = product.product_id;
-    document.getElementById('edit_name').value = product.name;
-    document.getElementById('edit_description').value = product.description;
-    document.getElementById('edit_price').value = product.price;
-    document.getElementById('edit_stock_quantity').value = product.stock_quantity;
-    document.getElementById('edit_category_id').value = product.category_id;
+        function openEditModal(product) {
+            document.getElementById('edit_product_id').value = product.product_id;
+            document.getElementById('edit_name').value = product.name;
+            document.getElementById('edit_description').value = product.description;
+            document.getElementById('edit_price').value = product.price;
+            document.getElementById('edit_stock_quantity').value = product.stock_quantity;
+            document.getElementById('edit_category_id').value = product.category_id;
 
-    // Populate sizes
-    populateSizes('editSizesContainer', product.sizes || '');
+            // Populate sizes
+            populateSizes('editSizesContainer', product.sizes || '');
+            
+            // Populate colors
+            populateColors('editColorsContainer', product.colors || '');
 
-    // Show current images
-    const currentImagesDiv = document.getElementById('currentImages');
-    currentImagesDiv.innerHTML = '';
+            // Show current images
+            const currentImagesDiv = document.getElementById('currentImages');
+            currentImagesDiv.innerHTML = '';
 
-    if (product.images && product.images.trim() !== '') {
-        const images = product.images.split(',');
-        images.forEach(image => {
-            image = image.trim();
-            if (image) {
-                // Ensure web-accessible path
-                let webPath = image.replace('../', ''); // Remove leading ../ if exists
-                webPath = '../' + webPath; // Add correct relative path for admin/products.php
+            if (product.images && product.images.trim() !== '') {
+                const images = product.images.split(',');
+                images.forEach(image => {
+                    image = image.trim();
+                    if (image) {
+                        // Ensure web-accessible path
+                        let webPath = image.replace('../', ''); // Remove leading ../ if exists
+                        webPath = '../' + webPath; // Add correct relative path for admin/products.php
 
-                const imgContainer = document.createElement('div');
-                imgContainer.style.display = 'inline-block';
-                imgContainer.style.margin = '5px';
-                imgContainer.style.position = 'relative';
+                        const imgContainer = document.createElement('div');
+                        imgContainer.style.display = 'inline-block';
+                        imgContainer.style.margin = '5px';
+                        imgContainer.style.position = 'relative';
 
-                const img = document.createElement('img');
-                img.src = webPath;
-                img.style.width = '100px';
-                img.style.height = '100px';
-                img.style.objectFit = 'cover';
-                img.style.borderRadius = '5px';
-                img.style.border = '2px solid #ddd';
-                img.style.display = 'block';
+                        const img = document.createElement('img');
+                        img.src = webPath;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '5px';
+                        img.style.border = '2px solid #ddd';
+                        img.style.display = 'block';
 
-                img.onerror = function () {
-                    console.log('Failed to load image: ' + webPath);
-                    this.src = '../uploads/default.png'; // Fallback image
-                };
+                        img.onerror = function () {
+                            console.log('Failed to load image: ' + webPath);
+                            this.src = '../uploads/default.png'; // Fallback image
+                        };
 
-                imgContainer.appendChild(img);
-                currentImagesDiv.appendChild(imgContainer);
+                        imgContainer.appendChild(img);
+                        currentImagesDiv.appendChild(imgContainer);
+                    }
+                });
+            } else {
+                currentImagesDiv.innerHTML = '<p style="color: #666; font-style: italic;">No current images</p>';
             }
-        });
-    } else {
-        currentImagesDiv.innerHTML = '<p style="color: #666; font-style: italic;">No current images</p>';
-    }
 
-    document.getElementById('editModal').style.display = 'block';
-}
+            document.getElementById('editModal').style.display = 'block';
+        }
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
@@ -508,10 +702,12 @@ $productsResult = mysqli_query($conn, $productsQuery);
             document.getElementById('addPreview').innerHTML = '';
             document.getElementById('editPreview').innerHTML = '';
             
-            // Reset size inputs to have at least one empty input
+            // Reset size and color inputs to have at least one empty input
             if (modalId === 'addModal') {
                 document.getElementById('addSizesContainer').innerHTML = '';
                 addSizeInput('addSizesContainer');
+                document.getElementById('addColorsContainer').innerHTML = '';
+                addColorInput('addColorsContainer');
             }
         }
 
@@ -556,9 +752,10 @@ $productsResult = mysqli_query($conn, $productsQuery);
             }
         }
 
-        // Initialize add modal with one size input when page loads
+        // Initialize add modal with one size and color input when page loads
         document.addEventListener('DOMContentLoaded', function() {
             addSizeInput('addSizesContainer');
+            addColorInput('addColorsContainer');
         });
     </script>
 </body>

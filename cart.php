@@ -1,7 +1,7 @@
 <?php
 
 /*******************************
- *  cart.php –      *
+ *  cart.php – Enhanced with Size & Color Support      *
  *******************************/
 include 'header.php';
 require_once 'config.php';
@@ -62,18 +62,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-/* ---------- fetch cart items for display ---------- */
+/* ---------- fetch cart items for display with size and color ---------- */
 $items = [];
 $grand_total = 0;
 
 $stmt = $pdo->prepare("
     SELECT ci.cart_item_id,
            ci.quantity,
+           ci.selected_size,
+           ci.selected_color,
            p.product_id,
            p.name,
            p.price,
            p.stock_quantity,
-           p.images
+           p.images,
+           p.sizes,
+           p.colors
     FROM cart_items ci
     JOIN cart c ON c.cart_id = ci.cart_id
     JOIN products p ON p.product_id = ci.product_id
@@ -134,6 +138,51 @@ foreach ($items as $it) {
             object-fit: cover;
             border-radius: 8px;
             border: 1px solid #ddd;
+        }
+
+        .product-details {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-align: left;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .product-attributes {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .attribute-item {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .color-preview {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid #ddd;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        .size-badge {
+            background: #f0f0f0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
         }
 
         .qty-controls {
@@ -278,11 +327,44 @@ foreach ($items as $it) {
                             $thumb   = 'uploads/' . rawurlencode(basename($first));
                         }
                         $in_stock = $item['stock_quantity'] >= $item['quantity'];
+
+                        // Parse colors for color preview
+                        $color_hex = '';
+                        if (!empty($item['colors']) && !empty($item['selected_color'])) {
+                            $colors = json_decode($item['colors'], true);
+                            if (is_array($colors)) {
+                                foreach ($colors as $color) {
+                                    if ($color['name'] === $item['selected_color']) {
+                                        $color_hex = $color['hex'];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
                     ?>
                         <tr data-id="<?= $item['cart_item_id']; ?>">
-                            <td style="display:flex;align-items:center;gap:15px;">
-                                <img src="<?= htmlspecialchars($thumb); ?>" alt="" class="item-img">
-                                <span><?= htmlspecialchars($item['name']); ?></span>
+                            <td>
+                                <div class="product-details">
+                                    <img src="<?= htmlspecialchars($thumb); ?>" alt="" class="item-img">
+                                    <div class="product-info">
+                                        <div class="product-name"><?= htmlspecialchars($item['name']); ?></div>
+                                        <div class="product-attributes">
+                                            <?php if (!empty($item['selected_size'])): ?>
+                                                <span class="attribute-item">
+                                                    Size: <span class="size-badge"><?= htmlspecialchars($item['selected_size']); ?></span>
+                                                </span>
+                                            <?php endif; ?>
+                                            <?php if (!empty($item['selected_color'])): ?>
+                                                <span class="attribute-item">
+                                                    Color: <?= htmlspecialchars($item['selected_color']); ?>
+                                                    <?php if ($color_hex): ?>
+                                                        <span class="color-preview" style="background-color: <?= htmlspecialchars($color_hex); ?>"></span>
+                                                    <?php endif; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                             <td><?= number_format($item['price'], 0, '.', ','); ?></td>
                             <td>
@@ -369,6 +451,8 @@ foreach ($items as $it) {
 
         /* ---------- remove item ---------- */
         $('.remove-btn').on('click', function() {
+            if (!confirm("Are you sure you want to remove this item from your cart?")) return;
+            
             const row = $(this).closest('tr');
             const cartId = row.data('id');
             $.post('cart.php', {
@@ -397,28 +481,6 @@ foreach ($items as $it) {
             $('#grandTotal').text(formatNumber(total));
             $('.checkout-btn').prop('disabled', total === 0);
         }
-    </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.remove-btn').click(function() {
-                if (!confirm("Are you sure you want to remove this item from your cart?")) return;
-
-                const cart_item_id = $(this).data('id');
-
-                $.post('cart.php', {
-                    action: 'remove_item',
-                    cart_item_id: cart_item_id
-                }, function(response) {
-                    const res = JSON.parse(response);
-                    if (res.success) {
-                        location.reload(); // ✅ This triggers auto-refresh
-                    } else {
-                        alert("Failed to remove item.");
-                    }
-                });
-            });
-        });
     </script>
     <?php include 'footer.php'; ?>
 </body>

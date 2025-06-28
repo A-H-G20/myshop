@@ -86,6 +86,39 @@ if (empty($images)) {
         $stock_class = 'stock-available';
     }
 
+    // Parse sizes and colors if they exist
+    $available_sizes = [];
+    $available_colors = [];
+    
+    // Debug: Check if sizes and colors fields exist
+    error_log("Sizes field exists: " . (array_key_exists('sizes', $product) ? 'YES' : 'NO'));
+    error_log("Colors field exists: " . (array_key_exists('colors', $product) ? 'YES' : 'NO'));
+    error_log("Sizes value: " . ($product['sizes'] ?? 'NULL'));
+    error_log("Colors value: " . ($product['colors'] ?? 'NULL'));
+    
+    if (isset($product['sizes']) && !empty($product['sizes'])) {
+        $sizes = explode(',', $product['sizes']);
+        foreach ($sizes as $size) {
+            $size = trim($size);
+            if (!empty($size)) {
+                $available_sizes[] = $size;
+            }
+        }
+    }
+    
+    if (isset($product['colors']) && !empty($product['colors'])) {
+        $colors = explode(',', $product['colors']);
+        foreach ($colors as $color) {
+            $color = trim($color);
+            if (!empty($color)) {
+                $available_colors[] = $color;
+            }
+        }
+    }
+    
+    error_log("Available sizes: " . implode(', ', $available_sizes));
+    error_log("Available colors: " . implode(', ', $available_colors));
+
 } catch (PDOException $e) {
     echo "<div style='text-align: center; padding: 50px;'>Error loading product</div>";
     exit;
@@ -154,11 +187,47 @@ if (empty($images)) {
                         <span><?php echo htmlspecialchars($product['category_name'] ?? 'Uncategorized'); ?></span>
                     </div>
                     
-                    <div class="meta-item">
-                        <span><strong>Images:</strong></span>
-                        <span><?php echo count($images); ?> image<?php echo count($images) > 1 ? 's' : ''; ?> available</span>
-                    </div>
+                   
                 </div>
+                
+             
+                
+                <!-- Size Selection -->
+                <?php if (!empty($available_sizes)): ?>
+                    <div class="product-attribute">
+                        <label for="size-select"><strong>Size:</strong></label>
+                        <div class="size-options">
+                            <?php foreach ($available_sizes as $index => $size): ?>
+                                <label class="size-option">
+                                    <input type="radio" name="selected_size" value="<?php echo htmlspecialchars($size); ?>" 
+                                           <?php echo $index === 0 ? 'checked' : ''; ?> 
+                                           onchange="updateSelectedAttribute('size', this.value)">
+                                    <span class="size-label"><?php echo htmlspecialchars($size); ?></span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
+                
+                <!-- Color Selection -->
+                <?php if (!empty($available_colors)): ?>
+                    <div class="product-attribute">
+                        <label for="color-select"><strong>Color:</strong></label>
+                        <div class="color-options">
+                            <?php foreach ($available_colors as $index => $color): ?>
+                                <label class="color-option">
+                                    <input type="radio" name="selected_color" value="<?php echo htmlspecialchars($color); ?>" 
+                                           <?php echo $index === 0 ? 'checked' : ''; ?> 
+                                           onchange="updateSelectedAttribute('color', this.value)">
+                                    <span class="color-label" style="background-color: <?php echo strtolower($color); ?>;" 
+                                          title="<?php echo htmlspecialchars($color); ?>">
+                                        <?php echo htmlspecialchars($color); ?>
+                                    </span>
+                                </label>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 
                 <?php if ($product['stock_quantity'] > 0): ?>
                     <div class="quantity-selector">
@@ -189,6 +258,18 @@ if (empty($images)) {
 <?php include 'footer.php'; ?>
 
     <script>
+        // Store selected attributes
+        let selectedAttributes = {
+            size: '<?php echo !empty($available_sizes) ? htmlspecialchars($available_sizes[0]) : ""; ?>',
+            color: '<?php echo !empty($available_colors) ? htmlspecialchars($available_colors[0]) : ""; ?>'
+        };
+        
+        // Update selected attribute
+        function updateSelectedAttribute(type, value) {
+            selectedAttributes[type] = value;
+            console.log('Selected ' + type + ':', value);
+        }
+        
         // Image handling functions
         function changeMainImage(src, thumbnail) {
             const mainImage = document.getElementById('mainImage');
@@ -268,14 +349,25 @@ if (empty($images)) {
             btn.innerHTML = 'Adding to Cart...';
             btn.disabled = true;
             
+            // Prepare cart data with selected attributes
+            const cartData = {
+                product_id: productId,
+                user_id: userId,
+                quantity: quantity
+            };
+            
+            // Add selected attributes if they exist
+            if (selectedAttributes.size) {
+                cartData.selected_size = selectedAttributes.size;
+            }
+            if (selectedAttributes.color) {
+                cartData.selected_color = selectedAttributes.color;
+            }
+            
             $.ajax({
                 url: 'add_to_cart.php',
                 method: 'POST',
-                data: {
-                    product_id: productId,
-                    user_id: userId,
-                    quantity: quantity
-                },
+                data: cartData,
                 dataType: 'json',
                 timeout: 10000,
                 success: function(response) {
@@ -395,5 +487,115 @@ if (empty($images)) {
             }
         });
     </script>
+
+    <style>
+        /* Styles for size and color selection */
+        .product-attribute {
+            margin: 20px 0;
+        }
+        
+        .product-attribute label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        /* Size Options */
+        .size-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .size-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .size-option input[type="radio"] {
+            display: none;
+        }
+        
+        .size-label {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background: #fff;
+            transition: all 0.3s ease;
+            min-width: 40px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .size-option input[type="radio"]:checked + .size-label {
+            border-color: #3498db;
+            background: #3498db;
+            color: white;
+        }
+        
+        .size-option:hover .size-label {
+            border-color: #3498db;
+            transform: translateY(-1px);
+        }
+        
+        /* Color Options */
+        .color-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .color-option {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .color-option input[type="radio"] {
+            display: none;
+        }
+        
+        .color-label {
+            display: inline-block;
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            text-align: center;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .color-option input[type="radio"]:checked + .color-label {
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
+        }
+        
+        .color-option:hover .color-label {
+            border-color: #3498db;
+            transform: translateY(-1px);
+        }
+        
+        /* Special styling for color labels with actual colors */
+        .color-label[style*="background-color"] {
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .size-options, .color-options {
+                justify-content: flex-start;
+            }
+            
+            .size-label, .color-label {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+        }
+    </style>
 </body>
 </html>

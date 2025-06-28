@@ -39,7 +39,10 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
                 while ($order = mysqli_fetch_assoc($orders_result)) {
                     $order_id   = $order['order_id'];
 
+                    // Updated query to include selected_size and selected_color
                     $items_sql  = "SELECT oi.*,
+                                          oi.selected_size,
+                                          oi.selected_color,
                                           p.name   AS product_name,
                                           p.images AS product_image
                                    FROM   order_items oi
@@ -113,6 +116,34 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
         </div>
     </div>
 
+    <style>
+        .item-attributes {
+            display: flex;
+            gap: 10px;
+            margin: 5px 0;
+            flex-wrap: wrap;
+        }
+
+        .item-size, .item-color {
+            font-size: 12px;
+            color: #666;
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            border: 1px solid #ddd;
+        }
+
+        .item-color {
+            background: #e8f4f8;
+            border-color: #b8d4e3;
+        }
+
+        .item-size {
+            background: #f0f8e8;
+            border-color: #c8e6c9;
+        }
+    </style>
+
     <script>
         /* ------------------ APPROVE ORDER ------------------ */
         function approveOrder(orderId) {
@@ -148,27 +179,33 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
                 if (!imagePath) imagePath = 'images/default.png';
 
-                /* 2. Format size display - with debugging */
-                let sizeDisplay = '';
-                if (item.sizes && item.sizes.trim() !== '') {
-                    sizeDisplay = `<div style="color:#666;font-size:14px;">Size: ${item.sizes}</div>`;
-                } else {
-                    // Debug: show if sizes field exists but is empty
-                    console.log('Sizes field for item:', item.product_name, 'Sizes value:', item.sizes);
+                /* 2. Format size and color display */
+                let attributesHTML = '';
+                if (item.selected_size && item.selected_size.trim() !== '') {
+                    attributesHTML += `<span class="item-size">Size: ${item.selected_size}</span>`;
+                }
+                if (item.selected_color && item.selected_color.trim() !== '') {
+                    attributesHTML += `<span class="item-color">Color: ${item.selected_color}</span>`;
+                }
+
+                // Wrap attributes in container if we have any
+                let attributesDisplay = '';
+                if (attributesHTML) {
+                    attributesDisplay = `<div class="item-attributes">${attributesHTML}</div>`;
                 }
 
                 itemsHTML += `
                     <div class="item-row"
-                         style="display:flex;align-items:center;gap:15px;margin-bottom:10px;">
+                         style="display:flex;align-items:center;gap:15px;margin-bottom:15px;padding:10px;border:1px solid #eee;border-radius:8px;">
                         <img src="${imagePath}"
                              alt="Product"
                              style="width:60px;height:60px;object-fit:cover;border-radius:8px;border:1px solid #ccc;">
-                        <div>
-                            <div><strong>${item.product_name}</strong></div>
-                            ${sizeDisplay}
-                            <div>
+                        <div style="flex:1;">
+                            <div style="margin-bottom:5px;"><strong>${item.product_name}</strong></div>
+                            ${attributesDisplay}
+                            <div style="color:#666;">
                                 Qty: ${item.quantity} × $${parseFloat(item.price_at_time).toFixed(2)}
-                                = <strong>$${(item.quantity * item.price_at_time).toFixed(2)}</strong>
+                                = <strong style="color:#333;">$${(item.quantity * item.price_at_time).toFixed(2)}</strong>
                             </div>
                         </div>
                     </div>`;

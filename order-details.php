@@ -26,9 +26,9 @@ if (!$order) {
     exit;
 }
 
-// Fetch order items
+// Fetch order items with size and color information
 $stmt2 = $pdo->prepare("
-    SELECT oi.*, p.name, p.images
+    SELECT oi.*, p.name, p.images, oi.selected_size, oi.selected_color
     FROM order_items oi
     JOIN products p ON oi.product_id = p.product_id
     WHERE oi.order_id = ?
@@ -91,6 +91,19 @@ $total = $subtotal + $delivery_fee;
                             <div class="item-details">
                                 <div class="item-name"><?= htmlspecialchars($item['name']) ?></div>
                                 <div class="item-price"><?= number_format($item['price_at_time'], 0, '.', ',') ?> $ each</div>
+                                
+                                <?php if (!empty($item['selected_size']) || !empty($item['selected_color'])): ?>
+                                    <div class="item-attributes">
+                                        <?php if (!empty($item['selected_size'])): ?>
+                                            <span class="item-size">Size: <?= htmlspecialchars($item['selected_size']) ?></span>
+                                        <?php endif; ?>
+                                        
+                                        <?php if (!empty($item['selected_color'])): ?>
+                                            <span class="item-color">Color: <?= htmlspecialchars($item['selected_color']) ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                                
                                 <div class="item-quantity">Quantity: <?= $item['quantity'] ?></div>
                             </div>
                             <div class="item-total"><?= number_format($total_item_price, 0, '.', ',') ?> $</div>
@@ -122,6 +135,46 @@ $total = $subtotal + $delivery_fee;
         </div>
     </div>
 </div>
+
+<style>
+.item-attributes {
+    margin: 5px 0;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.item-size, .item-color {
+    font-size: 14px;
+    color: #666;
+    background: #f5f5f5;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.item-color {
+    background: #e8f4f8;
+    border-color: #b8d4e3;
+}
+
+.item-size {
+    background: #f0f8e8;
+    border-color: #c8e6c9;
+}
+
+@media (max-width: 768px) {
+    .item-attributes {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .item-size, .item-color {
+        align-self: flex-start;
+    }
+}
+</style>
+
 <?php include 'footer.php'; ?>
 <script>
     function trackOrder() {
