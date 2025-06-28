@@ -49,7 +49,7 @@ if (empty($cart_items)) {
 }
 
 // Stripe setup
-\Stripe\Stripe::setApiKey("sk_test_51Rb3oLFYWxx1m0NMXgUNK1HPza5Jvr9EfLdZA6QZICC6U4CIt2FaNWMKT1fpYsoQmQgLnLjEx5Yewh3hKjIcmHOx00lwYpMQMk");
+\Stripe\Stripe::setApiKey("");
 
 $line_items = [];
 $total_amount = 0;
