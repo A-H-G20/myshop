@@ -228,8 +228,8 @@ $clear_cart_stmt->execute([$user_id]);
 // Stripe checkout session
 $checkout_session = \Stripe\Checkout\Session::create([
     "mode" => "payment",
-    "success_url" => "http://localhost/sm/orders.php?order_id=" . $order_id,
-    "cancel_url" => "http://localhost/sm/cart.php",
+    "success_url" => "http://localhost/myshop/orders.php?order_id=" . $order_id,
+    "cancel_url" => "http://localhost/myshop/cart.php",
     "locale" => "auto",
     "line_items" => $line_items,
     "metadata" => [

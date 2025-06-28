@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 25, 2025 at 07:12 PM
--- Server version: 8.3.0
--- PHP Version: 8.2.18
+-- Generation Time: Jun 28, 2025 at 12:11 PM
+-- Server version: 9.1.0
+-- PHP Version: 8.3.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,14 +34,7 @@ CREATE TABLE IF NOT EXISTS `cart` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`cart_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `cart`
---
-
-INSERT INTO `cart` (`cart_id`, `user_id`, `created_at`) VALUES
-(12, 6, '2025-06-25 19:08:43');
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -56,17 +49,14 @@ CREATE TABLE IF NOT EXISTS `cart_items` (
   `product_id` int NOT NULL,
   `quantity` int NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `selected_size` varchar(50) DEFAULT NULL,
+  `selected_color` varchar(50) DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`cart_item_id`),
   KEY `cart_id` (`cart_id`),
-  KEY `product_id` (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `cart_items`
---
-
-INSERT INTO `cart_items` (`cart_item_id`, `cart_id`, `product_id`, `quantity`, `created_at`) VALUES
-(17, 12, 11, 1, '2025-06-25 19:08:43');
+  KEY `product_id` (`product_id`),
+  KEY `idx_cart_items_attributes` (`cart_id`,`product_id`,`selected_size`,`selected_color`)
+) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -136,16 +126,14 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `orders`
 --
 
 INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `status`, `shipping_address`, `billing_address`, `payment_method`, `payment_status`, `created_at`, `updated_at`) VALUES
-(5, 6, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 18:31:52', '2025-06-25 18:41:12'),
-(6, 6, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 19:06:51', '2025-06-25 19:07:33'),
-(7, 6, 357.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-25 19:07:52', '2025-06-25 19:08:12');
+(9, 11, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-28 12:04:19', '2025-06-28 12:08:30');
 
 -- --------------------------------------------------------
 
@@ -161,20 +149,19 @@ CREATE TABLE IF NOT EXISTS `order_items` (
   `quantity` int NOT NULL,
   `price_at_time` decimal(10,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `selected_size` varchar(20) DEFAULT NULL,
+  `selected_color` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`order_item_id`),
   KEY `order_id` (`order_id`),
   KEY `product_id` (`product_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `order_items`
 --
 
-INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `created_at`) VALUES
-(8, 7, 12, 1, 12.00, '2025-06-25 19:07:52'),
-(7, 7, 11, 1, 345.00, '2025-06-25 19:07:52'),
-(6, 6, 11, 1, 345.00, '2025-06-25 19:06:51'),
-(5, 5, 11, 1, 345.00, '2025-06-25 18:31:52');
+INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `price_at_time`, `created_at`, `selected_size`, `selected_color`) VALUES
+(12, 9, 11, 1, 345.00, '2025-06-28 12:04:19', 's', 'red');
 
 -- --------------------------------------------------------
 
@@ -193,6 +180,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `images` text,
   `sizes` text NOT NULL,
+  `colors` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`product_id`),
   KEY `category_id` (`category_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -201,9 +189,9 @@ CREATE TABLE IF NOT EXISTS `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_quantity`, `category_id`, `created_at`, `images`, `sizes`) VALUES
-(12, 'tseet', 'sf', 12.00, 212, 1, '2025-06-25 11:04:55', '../uploads/1750849495_R.png', 'q'),
-(11, 'tsee', 'erertr', 345.00, 33, 1, '2025-06-25 10:52:11', '../uploads/1750848731_R.jpg', 's');
+INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock_quantity`, `category_id`, `created_at`, `images`, `sizes`, `colors`) VALUES
+(12, 'tseet', 'sf', 12.00, 212, 1, '2025-06-25 11:04:55', '../uploads/1750849495_R.png', 'q', 'Red'),
+(11, 'tsee', 'erertr', 345.00, 33, 1, '2025-06-25 10:52:11', '../uploads/1750926028_t-shirt-for-men-6906923_640.jpg,../uploads/1750926028_women jeans.png,../uploads/1750926028_Women T-shirt.png', 's', NULL);
 
 -- --------------------------------------------------------
 
@@ -241,7 +229,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`id`, `first_name`, `last_name`, `username`, `email`, `phone`, `password`, `verification_code`, `email_verified_at`, `role`, `address`, `city`, `date_of_birth`, `gender`, `verified`, `reset_code`, `reset_code_expires`, `created_at`) VALUES
-(6, 'Ahmad', 'Ghosen', 'ahmad.ghosen', 'ahmadghosen200@gmail.com', '79666666', '$2y$10$1Er1TiVPF0adCsvwnCLVBemf4b.S/YvAuvDDxU7cPvEH8NSJJP.r2', NULL, '2025-06-25 13:06:30', 'admin', 'bekaa', 'MARJ', '2025-06-23', 'male', 1, NULL, '0000-00-00 00:00:00', '2025-06-25 10:06:06');
+(11, 'Ahmad', 'Ghosen', 'ahmad.ghosen', 'ahmadghosen200@gmail.com', '79666666', '$2y$10$1Er1TiVPF0adCsvwnCLVBemf4b.S/YvAuvDDxU7cPvEH8NSJJP.r2', NULL, '2025-06-25 13:06:30', 'admin', 'bekaa', 'MARJ', '2025-06-23', 'male', 1, NULL, '0000-00-00 00:00:00', '2025-06-25 10:06:06');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
