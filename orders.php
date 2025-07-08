@@ -9,6 +9,19 @@ if ($user_id <= 0) {
     exit;
 }
 
+// Handle delivery confirmation
+if (isset($_POST['confirm_delivery']) && isset($_POST['order_id'])) {
+    $order_id = intval($_POST['order_id']);
+    
+    // Update order status to delivered and set delivery confirmation
+    $update = $pdo->prepare("UPDATE orders SET status = 'delivered', delivery_confirmed_at = NOW(), delivery_confirmed_by_user = 1 WHERE order_id = ? AND user_id = ?");
+    $update->execute([$order_id, $user_id]);
+    
+    // Redirect to avoid form resubmission
+    header('Location: orders.php?delivery_confirmed=1');
+    exit;
+}
+
 // If payment was successful, mark order as paid and clear the cart
 if (isset($_GET['order_id'])) {
     $order_id = intval($_GET['order_id']);
@@ -90,6 +103,12 @@ try {
                 </div>
             <?php endif; ?>
 
+            <?php if (isset($_GET['delivery_confirmed'])): ?>
+                <div class="success-message" style="background:#d4edda;padding:10px;border-radius:5px;margin-bottom:15px;">
+                    ✅ Order delivery confirmed successfully!
+                </div>
+            <?php endif; ?>
+
             <div class="orders-filter">
                 <select class="filter-select" onchange="filterOrders(this.value)">
                     <option value="all" <?= $status_filter === 'all' ? 'selected' : '' ?>>All Orders</option>
@@ -122,6 +141,10 @@ try {
                             <div class="order-info-item"><strong>Date:</strong> <?= date('M j, Y', strtotime($order['created_at'])) ?></div>
                             <div class="order-info-item"><strong>Status:</strong> <?= ucfirst($order['status']) ?></div>
                             <div class="order-info-item"><strong>Total:</strong> <?= number_format($order['total_amount'], 0, '.', ',') ?> $</div>
+                            
+                            <?php if ($order['delivery_confirmed_by_user'] == 1 && !empty($order['delivery_confirmed_at'])): ?>
+                                <div class="order-info-item"><strong>Delivery Confirmed:</strong> <?= date('M j, Y', strtotime($order['delivery_confirmed_at'])) ?></div>
+                            <?php endif; ?>
                         </div>
 
                         <div class="order-items">
@@ -155,6 +178,14 @@ try {
                             <?php if ($order['status'] === 'delivered'): ?>
                                 <button onclick="alert('Reorder feature coming soon')">Reorder</button>
                             <?php endif; ?>
+                            
+                            <?php if ($order['status'] === 'shipped' && $order['delivery_confirmed_by_user'] != 1): ?>
+                                <form method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to confirm delivery of this order?')">
+                                    <input type="hidden" name="order_id" value="<?= $order['order_id'] ?>">
+                                    <button type="submit" name="confirm_delivery" class="confirm-delivery-btn">Confirm Delivery</button>
+                                </form>
+                            <?php endif; ?>
+                            
                             <a href="order-details.php?id=<?= $order['order_id'] ?>">View Details</a>
                         </div>
                     </div>
@@ -179,3 +210,30 @@ try {
         window.location.href = url.toString();
     }
 </script>
+
+<style>
+.confirm-delivery-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.confirm-delivery-btn:hover {
+    background-color: #218838;
+}
+
+.order-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.order-actions form {
+    margin: 0;
+}
+</style>

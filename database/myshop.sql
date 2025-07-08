@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jun 28, 2025 at 12:11 PM
+-- Generation Time: Jul 08, 2025 at 02:50 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -34,7 +34,14 @@ CREATE TABLE IF NOT EXISTS `cart` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`cart_id`),
   KEY `user_id` (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `cart`
+--
+
+INSERT INTO `cart` (`cart_id`, `user_id`, `created_at`) VALUES
+(10, 11, '2025-07-08 08:14:04');
 
 -- --------------------------------------------------------
 
@@ -56,7 +63,14 @@ CREATE TABLE IF NOT EXISTS `cart_items` (
   KEY `cart_id` (`cart_id`),
   KEY `product_id` (`product_id`),
   KEY `idx_cart_items_attributes` (`cart_id`,`product_id`,`selected_size`,`selected_color`)
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `cart_items`
+--
+
+INSERT INTO `cart_items` (`cart_item_id`, `cart_id`, `product_id`, `quantity`, `created_at`, `selected_size`, `selected_color`, `updated_at`) VALUES
+(16, 10, 11, 1, '2025-07-08 08:14:04', 's', NULL, '2025-07-08 08:14:04');
 
 -- --------------------------------------------------------
 
@@ -124,6 +138,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `payment_status` enum('pending','completed','failed','refunded') DEFAULT 'pending',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `delivery_confirmed_by_user` tinyint(1) DEFAULT '0' COMMENT 'Whether user confirmed delivery (0=no, 1=yes)',
+  `delivery_confirmed_at` timestamp NULL DEFAULT NULL COMMENT 'When user confirmed delivery',
   PRIMARY KEY (`order_id`),
   KEY `user_id` (`user_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -132,8 +148,8 @@ CREATE TABLE IF NOT EXISTS `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `status`, `shipping_address`, `billing_address`, `payment_method`, `payment_status`, `created_at`, `updated_at`) VALUES
-(9, 11, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-28 12:04:19', '2025-06-28 12:08:30');
+INSERT INTO `orders` (`order_id`, `user_id`, `total_amount`, `status`, `shipping_address`, `billing_address`, `payment_method`, `payment_status`, `created_at`, `updated_at`, `delivery_confirmed_by_user`, `delivery_confirmed_at`) VALUES
+(9, 11, 345.00, '', 'bekaa', 'MARJ', 'Stripe', '', '2025-06-28 12:04:19', '2025-07-08 14:45:54', 1, '2025-07-08 14:45:54');
 
 -- --------------------------------------------------------
 
